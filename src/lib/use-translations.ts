@@ -26,19 +26,19 @@ export const useTranslations = () => {
     setT(translations[language]);
   }, [language]);
 
-  const translate = (key: TranslationKey) => {
+  const translate = (key: TranslationKey): string => {
     const keys = key.split(".");
-    let result: any = t;
+    let result: unknown = t;
 
     for (const k of keys) {
-      if (result && result[k]) {
-        result = result[k];
+      if (typeof result === "object" && result !== null && k in result) {
+        result = (result as Record<string, unknown>)[k];
       } else {
         return key; // Return the key if translation not found
       }
     }
 
-    return result;
+    return typeof result === "string" ? result : key; // Ensure the result is a string
   };
 
   return { t: translate, language };
