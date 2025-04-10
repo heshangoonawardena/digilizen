@@ -1,8 +1,32 @@
 import { useTranslations } from "@/lib/use-translations";
 import { BellRing, CreditCard, QrCode, Smartphone } from "lucide-react";
+import FeatureCard from "./FeatureCard";
 
 const KeyFeatures = () => {
   const { t } = useTranslations();
+
+  const features = [
+    {
+      icon: Smartphone,
+      title: t("home.features.cards.accessibility.title"),
+      description: t("home.features.cards.accessibility.description"),
+    },
+    {
+      icon: QrCode,
+      title: t("home.features.cards.convenience.title"),
+      description: t("home.features.cards.convenience.description"),
+    },
+    {
+      icon: CreditCard,
+      title: t("home.features.cards.fine.title"),
+      description: t("home.features.cards.fine.description"),
+    },
+    {
+      icon: BellRing,
+      title: t("home.features.cards.notification.title"),
+      description: t("home.features.cards.notification.description"),
+    },
+  ];
 
   return (
     <section className="from-primary/5 via-primary/10 to-background relative flex items-center justify-center overflow-hidden bg-gradient-to-t py-12 md:py-24">
@@ -21,54 +45,17 @@ const KeyFeatures = () => {
             </p>
           </div>
         </div>
-        <div className="mx-auto grid gap-6 py-12 md:grid-cols-2 lg:grid-cols-4">
-          <div className="border-primary/10 bg-primary/5 hover:bg-primary/10 flex flex-col items-center space-y-2 rounded-lg border p-6 transition-all hover:shadow-md">
-            <div className="bg-primary/10 rounded-full p-3">
-              <Smartphone className="text-primary h-6 w-6" />
-            </div>
-            <h3 className="text-center text-xl font-bold">
-              {t("home.features.cards.accessibility.title")}
-            </h3>
-            <p className="text-muted-foreground text-center">
-              {t("home.features.cards.accessibility.description")}
-            </p>
-          </div>
-          <div className="border-primary/10 bg-primary/5 hover:bg-primary/10 flex flex-col items-center space-y-2 rounded-lg border p-6 transition-all hover:shadow-md">
-            <div className="bg-primary/10 rounded-full p-3">
-              <QrCode className="text-primary h-6 w-6" />
-            </div>
-            <h3 className="text-center text-xl font-bold">
-              {t("home.features.cards.convenience.title")}
-            </h3>
-            <p className="text-muted-foreground text-center">
-              {t("home.features.cards.convenience.description")}
-            </p>
-          </div>
-          <div className="border-primary/10 bg-primary/5 hover:bg-primary/10 flex flex-col items-center space-y-2 rounded-lg border p-6 transition-all hover:shadow-md">
-            <div className="bg-primary/10 rounded-full p-3">
-              <CreditCard className="text-primary h-6 w-6" />
-            </div>
-            <h3 className="text-center text-xl font-bold">
-              {t("home.features.cards.fine.title")}
-            </h3>
-            <p className="text-muted-foreground text-center">
-              {t("home.features.cards.fine.description")}
-            </p>
-          </div>
-          <div className="border-primary/10 bg-primary/5 hover:bg-primary/10 flex flex-col items-center space-y-2 rounded-lg border p-6 transition-all hover:shadow-md">
-            <div className="bg-primary/10 rounded-full p-3">
-              <BellRing className="text-primary h-6 w-6" />
-            </div>
-            <h3 className="text-center text-xl font-bold">
-              {t("home.features.cards.notification.title")}
-            </h3>
-            <p className="text-muted-foreground text-center">
-              {t("home.features.cards.notification.description")}
-            </p>
-          </div>
+        <div className="mx-auto grid grid-cols-2 gap-6 py-12 lg:grid-cols-4">
+          {features.map((feature, index) => (
+            <FeatureCard
+              key={index}
+              icon={feature.icon}
+              title={feature.title}
+              description={feature.description}
+            />
+          ))}
         </div>
       </div>
-      {/* <div className="from-primary/10 via-primary/5 to-primary/10 absolute right-0 -bottom-6 left-0 h-24 -skew-y-3 transform bg-gradient-to-r"></div> */}
     </section>
   );
 };
