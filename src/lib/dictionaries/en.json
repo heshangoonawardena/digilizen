@@ -48,16 +48,16 @@
       "description": "Converting your physical license to an e-license is simple and secure.",
       "steps": {
         "register": {
-          "title": "Register",
-          "description": "Create an account and verify your identity with our secure verification process."
+          "title": "Get Registered",
+          "description": "Sign up using your license number, NIC, and phone number."
         },
         "verify": {
-          "title": "Upload License",
-          "description": "Upload your physical license or learner's permit for verification by our system."
+          "title": "Get Verified",
+          "description": "We’ll verify your details, and you’ll get access to your digital license within 24 hours."
         },
         "access": {
-          "title": "Access E-License",
-          "description": "Once verified, access your digital license through our secure dashboard or mobile app."
+          "title": "Get Access",
+          "description": "Show your digital license via your phone with a quick tap for verification by authorities"
         }
       },
       "cta": "Get Started Now"

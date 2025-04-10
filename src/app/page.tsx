@@ -1,6 +1,7 @@
 "use client";
 import KeyFeatures from "@/components/key-features";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/navbar";
+import Steps from "@/components/how-it-works";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "@/lib/use-translations";
 import { ArrowRight } from "lucide-react";
@@ -56,6 +57,7 @@ export default function HomePage() {
         <div className="from-primary/10 via-primary/5 to-primary/10 absolute right-0 -bottom-6 left-0 h-24 -skew-y-3 transform bg-gradient-to-r"></div>
       </section>
       <KeyFeatures />
+      <Steps />
     </main>
   );
 }
