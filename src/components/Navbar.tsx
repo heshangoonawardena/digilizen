@@ -212,12 +212,12 @@ const Navbar = () => {
                           variant="outline"
                           className="w-full rounded-full"
                         >
-                          t("navigation.login")
+                          {t("navigation.login")}
                         </Button>
                       </Link>
                       <Link href="/register" onClick={() => setIsOpen(false)}>
                         <Button className="from-primary to-primary/80 hover:from-primary/90 hover:to-primary w-full rounded-full bg-gradient-to-r">
-                          t("navigation.register")
+                          {t("navigation.register")}
                         </Button>
                       </Link>
                     </div>
