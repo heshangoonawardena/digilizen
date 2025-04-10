@@ -1,0 +1,248 @@
+{
+  "navigation": {
+    "language": "English",
+    "home": "Home",
+    "about": "About",
+    "features": "Features",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "login": "Login",
+    "register": "Register"
+  },
+  "home": {
+    "hero": {
+      "title": "The Future of Driving Licenses: Anytime, Anywhere",
+      "description": "A seamless, secure, and hassle-free digital experience for your driver's license and fines",
+      "primaryButton": "Get Started",
+      "secondaryButton": "Learn More"
+    },
+    "features": {
+      "badge": "Features",
+      "title": "Why Choose E-License?",
+      "description": "Our platform offers a secure, convenient, and accessible way to manage your driver's license digitally.",
+      "cards": {
+        "accessibility": {
+          "title": "No Physical License",
+          "description": "Your license is always accessible from your smartphone"
+        },
+        "convenience": {
+          "title": "Dynamic QR Code",
+          "description": "Scan it anywhere for instant verification."
+        },
+        "fine": {
+          "title": "Easy Fine Management",
+          "description": "Pay your fines in seconds, no post office trips needed"
+        },
+        "emergency": {
+          "title": "Emergency Medical Data",
+          "description": "Critical information stored for first responders."
+        },
+        "notification": {
+          "title": " Instant Notifications",
+          "description": "Be alerted about fines, renewals, and more"
+        }
+      }
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "description": "Converting your physical license to an e-license is simple and secure.",
+      "steps": {
+        "register": {
+          "title": "Register",
+          "description": "Create an account and verify your identity with our secure verification process."
+        },
+        "verify": {
+          "title": "Upload License",
+          "description": "Upload your physical license or learner's permit for verification by our system."
+        },
+        "access": {
+          "title": "Access E-License",
+          "description": "Once verified, access your digital license through our secure dashboard or mobile app."
+        }
+      },
+      "cta": "Get Started Now"
+    },
+    "testimonials": {
+      "title": "What Our Users Say",
+      "description": "Hear from people who have transformed their physical licenses into digital e-licenses.",
+      "items": [
+        {
+          "content": "I no longer worry about forgetting my license at home. It's always with me on my phone, and the verification process was quick and secure.",
+          "author": "Sarah Johnson",
+          "role": "Driver since 2018"
+        },
+        {
+          "content": "The e-license has been a game-changer for me. I travel frequently and having my license digitally accessible has made my life so much easier.",
+          "author": "Michael Chen",
+          "role": "Business Traveler"
+        },
+        {
+          "content": "As someone who's always forgetting things, having my license on my phone has saved me countless times. The setup was surprisingly easy too!",
+          "author": "Emily Rodriguez",
+          "role": "New Driver"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Ready to Go Digital?",
+      "description": "Join thousands of drivers who have already made the switch to e-licenses.",
+      "primaryButton": "Register Now",
+      "secondaryButton": "View Dashboard"
+    }
+  },
+  "footer": {
+    "company": "Company",
+    "about": "About",
+    "careers": "Careers",
+    "press": "Press",
+    "resources": "Resources",
+    "help": "Help Center",
+    "documentation": "Documentation",
+    "contact": "Contact",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "cookies": "Cookie Policy",
+    "copyright": "All rights reserved."
+  },
+  "login": {
+    "backHome": "Back to home",
+    "title": "Welcome Back",
+    "description": "Sign in to access your e-license dashboard",
+    "form": {
+      "email": "Email",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "login": "Sign In"
+    },
+    "noAccount": "Don't have an account?",
+    "registerLink": "Register now"
+  },
+  "register": {
+    "backHome": "Back to home",
+    "title": "Register for E-License",
+    "description": "Complete the form below to create your account and register your license",
+    "form": {
+      "personalInfo": "Personal Information",
+      "licenseInfo": "License Information",
+      "verification": "Verification",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phone": "Phone Number",
+      "address": "Address",
+      "city": "City",
+      "state": "State",
+      "zipCode": "Zip Code",
+      "licenseNumber": "License Number",
+      "licenseType": "License Type",
+      "driver": "Driver's License",
+      "learner": "Learner's Permit",
+      "issueDate": "Issue Date",
+      "expiryDate": "Expiry Date",
+      "uploadLicense": "Upload License",
+      "uploadInstructions": "Please upload a clear image of your physical license (front and back)",
+      "takePicture": "Take Picture",
+      "uploadFile": "Upload File",
+      "dragDrop": "Drag and drop your files here",
+      "browse": "Browse Files",
+      "termsAgree": "I agree to the",
+      "termsLink": "Terms and Conditions",
+      "submit": "Submit Registration",
+      "next": "Next",
+      "back": "Back"
+    }
+  },
+  "dashboard": {
+    "navigation": {
+      "search": "Search...",
+      "notifications": "Notifications",
+      "profile": "Profile",
+      "settings": "Settings",
+      "help": "Help & Support",
+      "logout": "Logout"
+    },
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "license": "My License",
+      "history": "History",
+      "documents": "Documents",
+      "profile": "Profile",
+      "settings": "Settings",
+      "help": "Help & Support",
+      "logout": "Logout"
+    },
+    "title": "Dashboard",
+    "welcome": "Welcome back, John Doe",
+    "stats": {
+      "licenses": "Licenses",
+      "expiry": "Expiry Date",
+      "lastAccessed": "Last Accessed",
+      "verifications": "Verifications",
+      "active": "Active",
+      "validFor": "Valid for",
+      "years": "years",
+      "thisMonth": "This month"
+    },
+    "tabs": {
+      "license": "License",
+      "history": "History",
+      "settings": "Settings"
+    },
+    "licenseCard": {
+      "title": "Driver's License",
+      "description": "View and manage your digital driver's license",
+      "name": "Full Name",
+      "dob": "Date of Birth",
+      "licenseNumber": "License Number",
+      "issueDate": "Issue Date",
+      "expiryDate": "Expiry Date",
+      "class": "License Class",
+      "restrictions": "Restrictions",
+      "status": "Status",
+      "active": "Active",
+      "scanInstructions": "Scan this QR code to verify license authenticity",
+      "download": "Download PDF",
+      "view": "View Full License"
+    },
+    "historyCard": {
+      "title": "Activity History",
+      "description": "Recent activity related to your license",
+      "events": [
+        {
+          "title": "License Verified",
+          "description": "Your license was verified by Traffic Police",
+          "date": "Today, 10:30 AM"
+        },
+        {
+          "title": "License Accessed",
+          "description": "You accessed your license from a new device",
+          "date": "Yesterday, 3:45 PM"
+        },
+        {
+          "title": "License Verified",
+          "description": "Your license was verified at Airport Security",
+          "date": "June 15, 2023, 8:20 AM"
+        }
+      ]
+    },
+    "settingsCard": {
+      "title": "Account Settings",
+      "description": "Manage your account settings and preferences",
+      "profile": {
+        "title": "Profile Information",
+        "description": "Update your personal information and contact details"
+      },
+      "preferences": {
+        "title": "Preferences",
+        "description": "Customize your dashboard and notification settings"
+      },
+      "notifications": {
+        "title": "Notification Settings",
+        "description": "Manage how and when you receive notifications"
+      },
+      "edit": "Edit"
+    }
+  }
+}
