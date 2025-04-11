@@ -1,9 +1,10 @@
 import "@/styles/globals.css";
-import Footer from "@/components/footer";
 
+import Navbar from "@/components/navbar";
+import { ClerkProvider } from "@clerk/nextjs";
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
-import Navbar from "@/components/navbar";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -20,12 +21,14 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html className={`${geist.variable}`}>
-      <body>
-        <Navbar/>
-        {children}
-        <Footer />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html className={`${geist.variable}`}>
+        <body>
+          <Navbar />
+          {children}
+          <Toaster position="top-right" />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

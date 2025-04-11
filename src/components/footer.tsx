@@ -1,12 +1,12 @@
 "use client";
 
 import { useTranslations } from "@/lib/use-translations";
-import { Facebook, Shield, Twitter } from "lucide-react";
+import { Facebook, Twitter } from "lucide-react";
 import Link from "next/link";
 
 const Footer = () => {
   const { t } = useTranslations();
-  
+
   return (
     <footer className="bg-primary/5 flex justify-center border-t py-12">
       <div className="container px-4 md:px-6">
@@ -14,7 +14,9 @@ const Footer = () => {
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
               <div>
-                <span className="text-primary font-bold text-2xl">Digilizen</span>
+                <span className="text-primary text-2xl font-bold">
+                  Digilizen
+                </span>
               </div>
             </Link>
             <p className="text-muted-foreground text-sm">
