@@ -1,7 +1,7 @@
 "use client";
-import KeyFeatures from "@/components/key-features";
-import Navbar from "@/components/navbar";
+import CallToAction from "@/components/call-to-action";
 import Steps from "@/components/how-it-works";
+import KeyFeatures from "@/components/key-features";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "@/lib/use-translations";
 import { ArrowRight } from "lucide-react";
@@ -13,7 +13,6 @@ export default function HomePage() {
 
   return (
     <main className="flex min-h-screen flex-col">
-      <Navbar />
       {/* Hero Section */}
       <section className="from-primary/5 via-primary/10 to-background relative overflow-hidden bg-gradient-to-l pt-24 pb-12">
         <div className="bg-grid-pattern absolute inset-0 opacity-5"></div>
@@ -56,8 +55,12 @@ export default function HomePage() {
         {/* Animated background elements */}
         <div className="from-primary/10 via-primary/5 to-primary/10 absolute right-0 -bottom-6 left-0 h-24 -skew-y-3 transform bg-gradient-to-r"></div>
       </section>
+
       <KeyFeatures />
       <Steps />
+
+      {/* Call to Action Section */}
+      <CallToAction />
     </main>
   );
 }
