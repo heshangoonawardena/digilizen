@@ -133,7 +133,7 @@
       "phone": "Phone Number",
       "address": "Address",
       "city": "City",
-      "state": "State",
+      "province": "Province",
       "zipCode": "Zip Code",
       "licenseNumber": "License Number",
       "licenseType": "License Type",
