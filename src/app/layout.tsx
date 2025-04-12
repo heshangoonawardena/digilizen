@@ -24,7 +24,6 @@ export default function RootLayout({
     <ClerkProvider>
       <html className={`${geist.variable}`}>
         <body>
-          <Navbar />
           {children}
           <Toaster position="top-right" />
         </body>
