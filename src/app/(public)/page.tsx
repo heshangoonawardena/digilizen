@@ -4,12 +4,23 @@ import Steps from "@/components/how-it-works";
 import KeyFeatures from "@/components/key-features";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "@/lib/use-translations";
+import { useUser } from "@clerk/nextjs";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function HomePage() {
   const { t } = useTranslations();
+  const { isSignedIn, user } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isSignedIn && user) {
+      router.push("/dashboard");
+    }
+  }, [isSignedIn, user]);
 
   return (
     <main className="flex min-h-screen flex-col">
