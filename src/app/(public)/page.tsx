@@ -18,9 +18,9 @@ export default function HomePage() {
 
   useEffect(() => {
     if (isSignedIn && user) {
-      router.push("/dashboard");
+      router.push("/admin");
     }
-  }, [isSignedIn, user]);
+  }, [isSignedIn, user, router]);
 
   return (
     <main className="flex min-h-screen flex-col">

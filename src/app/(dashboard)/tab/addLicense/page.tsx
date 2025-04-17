@@ -1,6 +1,10 @@
 // progress
 
 "use client";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Card,
   CardContent,
@@ -9,10 +13,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PhoneInput } from "@/components/ui/phone-input";
 import {
   Popover,
   PopoverContent,
@@ -25,30 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Camera,
-  FileUp,
-  QrCode,
-  Save,
-  Upload,
-  UserCheck,
-  Calendar as CalendarIcon,
-  CreditCard,
-} from "lucide-react";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Table,
   TableBody,
@@ -57,15 +46,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { format, addYears } from "date-fns";
-import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { PhoneInput } from "@/components/ui/phone-input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addYears, format } from "date-fns";
+import {
+  Calendar as CalendarIcon,
+  Camera,
+  FileUp,
+  QrCode,
+  Save,
+  Upload,
+  UserCheck
+} from "lucide-react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 const formSchema = z.object({
   nic: z.string().min(1),
@@ -146,7 +143,7 @@ export default function NewLicense() {
                 <CardHeader>
                   <CardTitle>Personal Information</CardTitle>
                   <CardDescription>
-                    Enter the citizen's personal details
+                    Enter the citizen&apos;s personal details
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -408,7 +405,7 @@ export default function NewLicense() {
                                 </FormControl>
                                 <SelectContent>
                                   <SelectItem value="learnerspermit">
-                                    Learner's Permit - L
+                                    Learner&apos;s Permit - L
                                   </SelectItem>
                                   <SelectItem value="permanant">
                                     Permanant - P
