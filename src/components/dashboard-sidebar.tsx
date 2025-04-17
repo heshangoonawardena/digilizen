@@ -17,7 +17,6 @@ import {
   BriefcaseMedical,
   CreditCard,
   GalleryVerticalEnd,
-  Handshake,
   HardDriveUpload,
   LayoutDashboard,
   Settings,
