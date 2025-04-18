@@ -1,7 +1,6 @@
 "use client";
 
 import { FileUpload } from "@/components/upload/fileUpload";
-import { toast } from "sonner";
 
 export default function Home() {
   return (
