@@ -1,6 +1,5 @@
-// progress
-
 "use client";
+import React, { useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -49,8 +48,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { formSchema } from "@/schemas/licenseSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addYears, format } from "date-fns";
+import { format } from "date-fns";
 import {
   Calendar as CalendarIcon,
   Camera,
@@ -58,55 +58,104 @@ import {
   QrCode,
   Save,
   Upload,
-  UserCheck
+  UserCheck,
 } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
-const formSchema = z.object({
-  nic: z.string().min(1),
-  phoneNumber: z.string(),
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  dateOfBirth: z.coerce.date(),
-  gender: z.string(),
-  bloodGroup: z.string(),
-  email: z.string(),
-  address: z.string(),
-  licenseType: z.string(),
-  licenseClass: z.string(),
-  dateOfIssue: z.coerce.date(),
-  expiryDate: z.coerce.date().optional(),
-  correctiveLens: z.boolean(),
-  autoOnly: z.boolean(),
-});
+const vehicleCategories = [
+  { class: "A1", label: "Light motor cycles", value: "A1" },
+  { class: "A", label: "Motorcycles", value: "A" },
+  { class: "B1", label: "Motor Tricycle", value: "B1" },
+  { class: "B", label: "Dual purpose Motor vehicle", value: "B" },
+  { class: "C1", label: "Light Motor Lorry", value: "C1" },
+  { class: "C", label: "Motor Lorry", value: "C" },
+  { class: "CE", label: "Heavy Motor Lorry", value: "CE" },
+  { class: "D1", label: "Light Motor Coach", value: "D1" },
+  { class: "D", label: "Motor Coach", value: "D" },
+  { class: "DE", label: "Heavy Motor Coach", value: "DE" },
+  { class: "G1", label: "Hand Tractors", value: "G1" },
+  { class: "G", label: "Land Vehicle", value: "G" },
+  { class: "J", label: "Special purpose Vehicle", value: "J" },
+];
+
+const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+
+const categoryExpiryMap: Record<string, number> = {
+  A1: 365 * 5, // 5 years
+  A: 365 * 5, // 5 years
+  B1: 365 * 8, // 8 years
+  B: 365 * 8, // 8 years
+  C1: 365 * 10, // 10 years
+  C: 365 * 10, // 10 years
+  CE: 365 * 12, // 12 years
+  D1: 365 * 7, // 7 years
+  D: 365 * 7, // 7 years
+  DE: 365 * 9, // 9 years
+  G1: 365 * 4, // 4 years
+  G: 365 * 4, // 4 years
+  J: 365 * 6, // 6 years
+};
 
 export default function NewLicense() {
-  const today = format(new Date(), "yyyy-MM-dd");
-  const expiryDate = format(addYears(new Date(), 8), "yyyy-MM-dd");
+  const [tab, setTab] = useState("details");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      dateOfBirth: new Date(),
-      expiryDate: new Date(),
-      dateOfIssue: new Date(),
+      licenseClasses: [],
+      dateOfBirth: undefined,
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>,
-      );
-    } catch (error) {
-      console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
+  const { fields, append, remove, update } = useFieldArray({
+    control: form.control,
+    name: "licenseClasses",
+  });
+
+  function addLicenseClass() {
+    const today = new Date();
+    append({
+      id:
+        typeof crypto !== "undefined" && crypto.randomUUID
+          ? crypto.randomUUID()
+          : Math.random().toString(36).slice(2),
+      vehicleClass: "",
+      vehicleCategory: "",
+      issueDate: today,
+      expiryDate: today,
+    });
+  }
+
+  function updateLicenseClass(idx: number, field: string, value: any) {
+    const items = form.getValues("licenseClasses") ?? [];
+    const item = {
+      id: "",
+      vehicleClass: "",
+      vehicleCategory: "",
+      issueDate: new Date(),
+      expiryDate: new Date(),
+      ...items[idx],
+    };
+    let updated = { ...item, [field]: value };
+    if (field === "vehicleCategory") {
+      const issueDate = item.issueDate ? new Date(item.issueDate) : new Date();
+      updated = {
+        ...updated,
+        vehicleClass: value.charAt(0).toUpperCase() + value.slice(1),
+        expiryDate: new Date(
+          issueDate.getTime() +
+            (form.getValues("licenseType") === "learnersPermit"
+              ? 182 * 24 * 60 * 60 * 1000
+              : (categoryExpiryMap[value] || 0) * 24 * 60 * 60 * 1000),
+        ),
+      };
     }
+    update(idx, updated);
+  }
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    setTab("documents");
   }
 
   return (
@@ -125,7 +174,7 @@ export default function NewLicense() {
         </div>
       </div>
 
-      <Tabs defaultValue="details" className="space-y-4">
+      <Tabs value={tab} onValueChange={setTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="details">Personal Details</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
@@ -143,7 +192,7 @@ export default function NewLicense() {
                 <CardHeader>
                   <CardTitle>Personal Information</CardTitle>
                   <CardDescription>
-                    Enter the citizen&apos;s personal details
+                    Enter the citizen's personal details
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -250,7 +299,7 @@ export default function NewLicense() {
                                     )}
                                   >
                                     {field.value ? (
-                                      format(field.value, "PPP")
+                                      format(new Date(field.value), "P")
                                     ) : (
                                       <span>Pick a date</span>
                                     )}
@@ -264,8 +313,14 @@ export default function NewLicense() {
                               >
                                 <Calendar
                                   mode="single"
-                                  selected={field.value}
-                                  onSelect={field.onChange}
+                                  selected={
+                                    field.value
+                                      ? new Date(field.value)
+                                      : undefined
+                                  }
+                                  onSelect={(date) =>
+                                    field.onChange(date || undefined)
+                                  }
                                   initialFocus
                                 />
                               </PopoverContent>
@@ -322,14 +377,11 @@ export default function NewLicense() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="A">A</SelectItem>
-                                <SelectItem value="A+">A+</SelectItem>
-                                <SelectItem value="B">B</SelectItem>
-                                <SelectItem value="B+">B+</SelectItem>
-                                <SelectItem value="AB">AB</SelectItem>
-                                <SelectItem value="AB+">AB+</SelectItem>
-                                <SelectItem value="O">O</SelectItem>
-                                <SelectItem value="O+">O+</SelectItem>
+                                {bloodGroups.map((group) => (
+                                  <SelectItem key={group} value={group}>
+                                    {group}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
 
@@ -370,7 +422,6 @@ export default function NewLicense() {
                             <FormControl>
                               <Textarea
                                 placeholder="Enter full address"
-                                className="resize-none"
                                 {...field}
                               />
                             </FormControl>
@@ -395,7 +446,10 @@ export default function NewLicense() {
                             <FormItem>
                               <FormLabel>License Type</FormLabel>
                               <Select
-                                onValueChange={field.onChange}
+                                onValueChange={(value) => {
+                                  field.onChange(value);
+                                  form.setValue("licenseClasses", []);
+                                }}
                                 defaultValue={field.value}
                               >
                                 <FormControl>
@@ -404,10 +458,10 @@ export default function NewLicense() {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="learnerspermit">
-                                    Learner&apos;s Permit - L
+                                  <SelectItem value="learnersPermit">
+                                    Learner's Permit - L
                                   </SelectItem>
-                                  <SelectItem value="permanant">
+                                  <SelectItem value="permanent">
                                     Permanant - P
                                   </SelectItem>
                                 </SelectContent>
@@ -423,7 +477,15 @@ export default function NewLicense() {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <Label>License Classes</Label>
-                        <Button size="sm">Add Class</Button>
+                        <Button
+                          size="sm"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            addLicenseClass();
+                          }}
+                        >
+                          Add Class
+                        </Button>
                       </div>
 
                       <Table>
@@ -437,114 +499,95 @@ export default function NewLicense() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          <TableRow>
-                            <TableCell>
-                              <Badge>Class A</Badge>
-                            </TableCell>
-                            <TableCell>
-                              <Select>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select vehicle category" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="car">car</SelectItem>
-                                  <SelectItem value="bike">bike</SelectItem>
-                                  <SelectItem value="van">van</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </TableCell>
-                            <TableCell>
-                              <FormField
-                                control={form.control}
-                                name="dateOfIssue"
-                                render={({ field }) => (
-                                  <FormItem className="flex flex-col">
-                                    <Popover>
-                                      <PopoverTrigger asChild>
-                                        <FormControl>
-                                          <Button
-                                            variant={"outline"}
-                                            className={cn(
-                                              "pl-3 text-left font-normal",
-                                            )}
-                                          >
-                                            {format(field.value, "PPP")}
-                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                          </Button>
-                                        </FormControl>
-                                      </PopoverTrigger>
-                                      <PopoverContent
-                                        className="w-auto p-0"
-                                        align="start"
+                          {fields.map((row, idx) => (
+                            <TableRow key={row.id}>
+                              <TableCell>
+                                <Badge>{row.vehicleClass || "N/A"}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                <FormField
+                                  control={form.control}
+                                  name={`licenseClasses.${idx}.vehicleCategory`}
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <Select
+                                        onValueChange={(value) => {
+                                          field.onChange(value);
+                                          updateLicenseClass(
+                                            idx,
+                                            "vehicleCategory",
+                                            value,
+                                          );
+                                        }}
+                                        value={field.value}
                                       >
-                                        <Calendar
-                                          mode="single"
-                                          selected={field.value}
-                                          onSelect={field.onChange}
-                                          initialFocus
-                                        />
-                                      </PopoverContent>
-                                    </Popover>
-                                  </FormItem>
-                                )}
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Input
-                                type="date"
-                                defaultValue={expiryDate}
-                                disabled
-                                className="w-full"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Button variant="destructive" size="sm">
-                                Remove
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell>
-                              <Badge>Class B</Badge>
-                            </TableCell>
-                            <TableCell>
-                              <Select>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select vehicle category" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="car">car</SelectItem>
-                                  <SelectItem value="bike">bike</SelectItem>
-                                  <SelectItem value="van">van</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </TableCell>
-                            <TableCell>
-                              <Input
-                                type="date"
-                                defaultValue={today}
-                                className="w-full"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Input
-                                type="date"
-                                defaultValue={expiryDate}
-                                disabled
-                                className="w-full"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Button variant="destructive" size="sm">
-                                Remove
-                              </Button>
-                            </TableCell>
-                          </TableRow>
+                                        <FormControl>
+                                          <SelectTrigger>
+                                            <SelectValue placeholder="Select vehicle category" />
+                                          </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                          {vehicleCategories.map((category) => (
+                                            <SelectItem
+                                              key={category.value}
+                                              value={category.value}
+                                            >
+                                              <div className="flex items-center gap-2">
+                                                {category.label}
+                                              </div>
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Input
+                                  type="date"
+                                  value={
+                                    row.issueDate
+                                      ? format(
+                                          new Date(row.issueDate),
+                                          "yyyy-MM-dd",
+                                        )
+                                      : ""
+                                  }
+                                  disabled
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Input
+                                  type="date"
+                                  value={
+                                    row.expiryDate
+                                      ? format(
+                                          new Date(row.expiryDate),
+                                          "yyyy-MM-dd",
+                                        )
+                                      : ""
+                                  }
+                                  disabled
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => remove(idx)}
+                                >
+                                  Remove
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
                         </TableBody>
                       </Table>
                       <p className="text-muted-foreground text-xs">
-                        Note: Expiry dates are automatically set up to 8 years
-                        from the issue date
+                        Note: Expiry dates are automatically calculated based on
+                        the vehicle category.
                       </p>
                     </div>
 

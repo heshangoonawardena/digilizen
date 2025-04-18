@@ -12,6 +12,7 @@ export const env = createEnv({
       .enum(["development", "test", "production"])
       .default("development"),
     CLERK_SECRET_KEY: z.string(),
+    UPLOADTHING_TOKEN: z.string()
   },
 
   /**
@@ -36,7 +37,7 @@ export const env = createEnv({
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL:
       process.env.NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL,
-    // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+    UPLOADTHING_TOKEN: process.env.UPLOADTHING_TOKEN,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
