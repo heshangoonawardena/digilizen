@@ -9,3 +9,7 @@ function onSubmit(values: z.infer<typeof formSchema>) {
     toast.error("Failed to submit the form. Please try again.");
   }
 }
+
+function onSubmit(values: z.infer<typeof formSchema>) {
+    setTab("documents");
+  }

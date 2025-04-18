@@ -1,5 +1,4 @@
 "use client";
-import React, { useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -47,6 +46,7 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { FileUpload } from "@/components/upload/fileUpload";
 import { cn } from "@/lib/utils";
 import { formSchema } from "@/schemas/licenseSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -54,16 +54,15 @@ import { format } from "date-fns";
 import {
   Calendar as CalendarIcon,
   Camera,
-  FileUp,
   QrCode,
   Save,
   Upload,
   UserCheck,
 } from "lucide-react";
+import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
-import { FileUpload } from "@/components/upload/fileUpload";
 import { toast } from "sonner";
+import { z } from "zod";
 
 const vehicleCategories = [
   { class: "A1", label: "Light motor cycles", value: "A1" },
@@ -149,7 +148,7 @@ export default function NewLicense() {
           issueDate.getTime() +
             (form.getValues("licenseType") === "learnersPermit"
               ? 182 * 24 * 60 * 60 * 1000
-              : (categoryExpiryMap[value] || 0) * 24 * 60 * 60 * 1000),
+              : (categoryExpiryMap[value] ?? 0) * 24 * 60 * 60 * 1000),
         ),
       };
     }
@@ -201,7 +200,7 @@ export default function NewLicense() {
                 <CardHeader>
                   <CardTitle>Personal Information</CardTitle>
                   <CardDescription>
-                    Enter the citizen's personal details
+                    Enter the citizen&apos;s personal details
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -328,7 +327,7 @@ export default function NewLicense() {
                                       : undefined
                                   }
                                   onSelect={(date) =>
-                                    field.onChange(date || undefined)
+                                    field.onChange(date ?? undefined)
                                   }
                                   initialFocus
                                 />
@@ -468,7 +467,7 @@ export default function NewLicense() {
                                 </FormControl>
                                 <SelectContent>
                                   <SelectItem value="learnersPermit">
-                                    Learner's Permit - L
+                                    Learner&apos;s Permit - L
                                   </SelectItem>
                                   <SelectItem value="permanent">
                                     Permanant - P
@@ -511,7 +510,7 @@ export default function NewLicense() {
                           {fields.map((row, idx) => (
                             <TableRow key={row.id}>
                               <TableCell>
-                                <Badge>Class {row.vehicleClass || "N/A"}</Badge>
+                                <Badge>Class {row.vehicleClass ?? "N/A"}</Badge>
                               </TableCell>
                               <TableCell>
                                 <FormField
