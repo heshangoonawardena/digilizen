@@ -62,6 +62,8 @@ import {
 } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
+import { FileUpload } from "@/components/upload/fileUpload";
+import { toast } from "sonner";
 
 const vehicleCategories = [
   { class: "A1", label: "Light motor cycles", value: "A1" },
@@ -155,7 +157,14 @@ export default function NewLicense() {
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    setTab("documents");
+    try {
+      const formData = { ...values };
+      console.log(formData);
+      toast.success("Form submitted successfully!");
+    } catch (error) {
+      console.error("Form submission error", error);
+      toast.error("Failed to submit the form. Please try again.");
+    }
   }
 
   return (
@@ -502,7 +511,7 @@ export default function NewLicense() {
                           {fields.map((row, idx) => (
                             <TableRow key={row.id}>
                               <TableCell>
-                                <Badge>{row.vehicleClass || "N/A"}</Badge>
+                                <Badge>Class {row.vehicleClass || "N/A"}</Badge>
                               </TableCell>
                               <TableCell>
                                 <FormField
@@ -644,7 +653,15 @@ export default function NewLicense() {
                 </CardContent>
                 <CardFooter className="flex justify-between">
                   <Button variant="outline">Cancel</Button>
-                  <Button type="submit">Save & Continue</Button>
+                  <Button
+                    type="button"
+                    onClick={() => setTab("documents")}
+                    disabled={
+                      !form.formState.isValid || !form.formState.isDirty
+                    }
+                  >
+                    Save & Continue
+                  </Button>
                 </CardFooter>
               </Card>
             </form>
@@ -660,64 +677,50 @@ export default function NewLicense() {
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label>National ID Card (Front & Back)</Label>
-                  <div className="bg-muted/50 flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-6">
-                    <FileUp className="text-muted-foreground mb-2 h-8 w-8" />
-                    <p className="text-muted-foreground mb-2 text-sm">
-                      Drag & drop or click to upload
-                    </p>
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <Upload className="h-4 w-4" />
-                      Upload
-                    </Button>
-                  </div>
+                  <Label>National ID Card (Front)</Label>
+                  <FileUpload
+                    endpoint="nicFrontUploader"
+                    onChange={(url) => {
+                      console.log("Files: ", url);
+                    }}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>National ID Card (Back)</Label>
+                  <FileUpload
+                    endpoint="nicBackUploader"
+                    onChange={(url) => {
+                      console.log("Files: ", url);
+                    }}
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label>Medical Certificate</Label>
-                  <div className="bg-muted/50 flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-6">
-                    <FileUp className="text-muted-foreground mb-2 h-8 w-8" />
-                    <p className="text-muted-foreground mb-2 text-sm">
-                      Drag & drop or click to upload
-                    </p>
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <Upload className="h-4 w-4" />
-                      Upload
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Proof of Address</Label>
-                  <div className="bg-muted/50 flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-6">
-                    <FileUp className="text-muted-foreground mb-2 h-8 w-8" />
-                    <p className="text-muted-foreground mb-2 text-sm">
-                      Drag & drop or click to upload
-                    </p>
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <Upload className="h-4 w-4" />
-                      Upload
-                    </Button>
-                  </div>
+                  <FileUpload
+                    endpoint="medicalUploader"
+                    onChange={(url) => {
+                      console.log("Files: ", url);
+                    }}
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label>Previous License (if applicable)</Label>
-                  <div className="bg-muted/50 flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-6">
-                    <FileUp className="text-muted-foreground mb-2 h-8 w-8" />
-                    <p className="text-muted-foreground mb-2 text-sm">
-                      Drag & drop or click to upload
-                    </p>
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <Upload className="h-4 w-4" />
-                      Upload
-                    </Button>
-                  </div>
+                  <FileUpload
+                    endpoint="previousLicenseUploader"
+                    onChange={(url) => {
+                      console.log("Files: ", url);
+                    }}
+                  />
                 </div>
               </div>
             </CardContent>
             <CardFooter className="flex justify-between">
-              <Button variant="outline">Back</Button>
+              <Button variant="outline" onClick={() => setTab("details")}>
+                Back
+              </Button>
               <Button>Save & Continue</Button>
             </CardFooter>
           </Card>
