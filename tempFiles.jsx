@@ -1,0 +1,11 @@
+function onSubmit(values: z.infer<typeof formSchema>) {
+
+  try {
+    const formData = { ...values };
+    console.log(formData);
+    toast.success("Form submitted successfully!");
+  } catch (error) {
+    console.error("Form submission error", error);
+    toast.error("Failed to submit the form. Please try again.");
+  }
+}
