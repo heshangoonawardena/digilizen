@@ -672,7 +672,7 @@ export default function NewLicense() {
                       </Table>
                       {form.formState.errors.licenseClasses && (
                         <p className="text-destructive mt-1 text-xs">
-                          {form.formState.errors.licenseClasses.message as string}
+                          {form.formState.errors.licenseClasses.message}
                         </p>
                       )}
                       <p className="text-muted-foreground text-xs">
@@ -762,7 +762,7 @@ export default function NewLicense() {
                       />
                       {form.formState.errors.nicFrontUrl && (
                         <p className="text-destructive mt-1 text-xs">
-                          {form.formState.errors.nicFrontUrl.message as string}
+                          {form.formState.errors.nicFrontUrl.message}
                         </p>
                       )}
                     </div>
@@ -778,7 +778,7 @@ export default function NewLicense() {
                       />
                       {form.formState.errors.nicBackUrl && (
                         <p className="text-destructive mt-1 text-xs">
-                          {form.formState.errors.nicBackUrl.message as string}
+                          {form.formState.errors.nicBackUrl.message}
                         </p>
                       )}
                     </div>
@@ -794,7 +794,7 @@ export default function NewLicense() {
                       />
                       {form.formState.errors.medicalUrl && (
                         <p className="text-destructive mt-1 text-xs">
-                          {form.formState.errors.medicalUrl.message as string}
+                          {form.formState.errors.medicalUrl.message}
                         </p>
                       )}
                     </div>
@@ -836,7 +836,7 @@ export default function NewLicense() {
                     />
                     {form.formState.errors.photoUrl && (
                       <p className="text-destructive mt-1 text-xs">
-                        {form.formState.errors.photoUrl.message as string}
+                        {form.formState.errors.photoUrl.message}
                       </p>
                     )}
                   </div>
