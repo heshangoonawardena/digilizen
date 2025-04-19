@@ -60,6 +60,19 @@ export const ourFileRouter = {
       console.log("NIC Upload complete:", file.ufsUrl);
       return { uploadedBy: metadata.userId };
     }),
+  
+  
+  photo: f({
+    image: {
+      maxFileSize: "2MB",
+      maxFileCount: 1,
+    },
+  })
+    .middleware(async () => handleAuth())
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("NIC Upload complete:", file.ufsUrl);
+      return { uploadedBy: metadata.userId };
+    }),
 
 } satisfies FileRouter;
 
