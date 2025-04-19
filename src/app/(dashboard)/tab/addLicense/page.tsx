@@ -48,7 +48,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { FileUpload } from "@/components/upload/fileUpload";
 import { cn } from "@/lib/utils";
-import { formSchema } from "@/schemas/licenseSchema";
+import { licenseSchema } from "@/schemas/licenseSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import {
@@ -59,6 +59,7 @@ import {
   Upload,
   UserCheck,
 } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -101,11 +102,19 @@ const categoryExpiryMap: Record<string, number> = {
 export default function NewLicense() {
   const [tab, setTab] = useState("details");
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof licenseSchema>>({
+    mode: "onBlur",
+    resolver: zodResolver(licenseSchema),
     defaultValues: {
+      nic: "",
+      firstName: "",
+      lastName: "",
       licenseClasses: [],
       dateOfBirth: undefined,
+      nicFrontUrl: "",
+      nicBackUrl: "",
+      medicalUrl: "",
+      previousLicenseUrl: "",
     },
   });
 
@@ -155,7 +164,48 @@ export default function NewLicense() {
     update(idx, updated);
   }
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function handleDetailsSaveContinue() {
+    const valid = await form.trigger([
+      "nic",
+      "phoneNumber",
+      "firstName",
+      "lastName",
+      "dateOfBirth",
+      "gender",
+      "bloodGroup",
+      "email",
+      "address",
+      "licenseType",
+      "correctiveLens",
+      "autoOnly",
+      "licenseClasses",
+    ]);
+    if (valid) {
+      setTab("documents");
+    }
+  }
+
+  async function handleDocumentsSaveContinue() {
+    const valid = await form.trigger([
+      "nicFrontUrl",
+      "nicBackUrl",
+      "medicalUrl",
+    ]);
+
+    if (valid) {
+      setTab("photo");
+    }
+  }
+
+  async function handlePhotoSaveContinue() {
+    const valid = await form.trigger(["photoUrl"]);
+
+    if (valid) {
+      setTab("review");
+    }
+  }
+
+  function onSubmit(values: z.infer<typeof licenseSchema>) {
     try {
       const formData = { ...values };
       console.log(formData);
@@ -164,6 +214,36 @@ export default function NewLicense() {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
     }
+  }
+
+  // Helper to get vehicle category label by value
+  function getCategoryLabel(value: string) {
+    const cat = vehicleCategories.find((c) => c.value === value);
+    return cat ? cat.label : value;
+  }
+
+  // Helper to get full name
+  function getFullName() {
+    return `${form.getValues("firstName") || ""} ${
+      form.getValues("lastName") || ""
+    }`.trim();
+  }
+
+  // Helper to get restrictions
+  function getRestrictions() {
+    const restrictions: string[] = [];
+    if (form.getValues("correctiveLens"))
+      restrictions.push("Corrective Lenses");
+    if (form.getValues("autoOnly"))
+      restrictions.push("Automatic Transmission Only");
+    return restrictions.length > 0 ? restrictions.join(", ") : "None";
+  }
+
+  // Helper to get initials for AvatarFallback
+  function getInitials() {
+    const first = form.getValues("firstName") || "";
+    const last = form.getValues("lastName") || "";
+    return `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
   }
 
   return (
@@ -186,16 +266,13 @@ export default function NewLicense() {
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="details">Personal Details</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
-          <TabsTrigger value="photo">Photo & Signature</TabsTrigger>
+          <TabsTrigger value="photo">Photo</TabsTrigger>
           <TabsTrigger value="review">Review & Issue</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="details">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="mx-auto space-y-8"
-            >
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <TabsContent value="details">
               <Card>
                 <CardHeader>
                   <CardTitle>Personal Information</CardTitle>
@@ -593,9 +670,14 @@ export default function NewLicense() {
                           ))}
                         </TableBody>
                       </Table>
+                      {form.formState.errors.licenseClasses && (
+                        <p className="text-destructive mt-1 text-xs">
+                          {form.formState.errors.licenseClasses.message}
+                        </p>
+                      )}
                       <p className="text-muted-foreground text-xs">
                         Note: Expiry dates are automatically calculated based on
-                        the vehicle category.
+                        the vehicle category
                       </p>
                     </div>
 
@@ -652,315 +734,336 @@ export default function NewLicense() {
                 </CardContent>
                 <CardFooter className="flex justify-between">
                   <Button variant="outline">Cancel</Button>
-                  <Button
-                    type="button"
-                    onClick={() => setTab("documents")}
-                    disabled={
-                      !form.formState.isValid || !form.formState.isDirty
-                    }
-                  >
+                  <Button type="button" onClick={handleDetailsSaveContinue}>
                     Save & Continue
                   </Button>
                 </CardFooter>
               </Card>
-            </form>
-          </Form>
-        </TabsContent>
+            </TabsContent>
 
-        <TabsContent value="documents">
-          <Card>
-            <CardHeader>
-              <CardTitle>Required Documents</CardTitle>
-              <CardDescription>Upload all required documents</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>National ID Card (Front)</Label>
-                  <FileUpload
-                    endpoint="nicFrontUploader"
-                    onChange={(url) => {
-                      console.log("Files: ", url);
-                    }}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>National ID Card (Back)</Label>
-                  <FileUpload
-                    endpoint="nicBackUploader"
-                    onChange={(url) => {
-                      console.log("Files: ", url);
-                    }}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Medical Certificate</Label>
-                  <FileUpload
-                    endpoint="medicalUploader"
-                    onChange={(url) => {
-                      console.log("Files: ", url);
-                    }}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Previous License (if applicable)</Label>
-                  <FileUpload
-                    endpoint="previousLicenseUploader"
-                    onChange={(url) => {
-                      console.log("Files: ", url);
-                    }}
-                  />
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button variant="outline" onClick={() => setTab("details")}>
-                Back
-              </Button>
-              <Button>Save & Continue</Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="photo">
-          <Card>
-            <CardHeader>
-              <CardTitle>Photo & Signature</CardTitle>
-              <CardDescription>
-                Capture or upload photo and signature
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Photo</Label>
-                  <div className="bg-muted/50 flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed p-6">
-                    <Avatar className="mb-4 h-32 w-32">
-                      <AvatarFallback>JS</AvatarFallback>
-                    </Avatar>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" className="gap-2">
-                        <Camera className="h-4 w-4" />
-                        Capture
-                      </Button>
-                      <Button variant="outline" size="sm" className="gap-2">
-                        <Upload className="h-4 w-4" />
-                        Upload
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Signature</Label>
-                  <div className="bg-muted/50 flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed p-6">
-                    <div className="mb-4 flex h-32 w-full items-center justify-center rounded-md bg-white">
-                      <p className="text-muted-foreground">
-                        Signature will appear here
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" className="gap-2">
-                        <Camera className="h-4 w-4" />
-                        Capture
-                      </Button>
-                      <Button variant="outline" size="sm" className="gap-2">
-                        <Upload className="h-4 w-4" />
-                        Upload
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-2">
-                <Label>Biometric Data</Label>
-                <div className="space-y-2">
-                  <Label>Fingerprints</Label>
-                  <div className="bg-muted/50 flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-6">
-                    <Button variant="outline" className="gap-2">
-                      <Camera className="h-4 w-4" />
-                      Capture Fingerprints
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button variant="outline">Back</Button>
-              <Button>Save & Continue</Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="review">
-          <Card>
-            <CardHeader>
-              <CardTitle>Review & Issue License</CardTitle>
-              <CardDescription>
-                Verify all information before issuing
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base">
-                      Personal Information
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground text-sm">
-                        Full Name:
-                      </span>
-                      <span className="text-sm font-medium">John Smith</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground text-sm">
-                        NIC:
-                      </span>
-                      <span className="text-sm font-medium">123456789V</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground text-sm">
-                        Date of Birth:
-                      </span>
-                      <span className="text-sm font-medium">Jan 15, 1985</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground text-sm">
-                        Gender:
-                      </span>
-                      <span className="text-sm font-medium">Male</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground text-sm">
-                        Blood Group:
-                      </span>
-                      <span className="text-sm font-medium">O+</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground text-sm">
-                        Address:
-                      </span>
-                      <span className="text-sm font-medium">
-                        123 Main Street, Anytown
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base">
-                      License Information
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground text-sm">
-                        License Type:
-                      </span>
-                      <span className="text-sm font-medium">New License</span>
+            <TabsContent value="documents">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Required Documents</CardTitle>
+                  <CardDescription>
+                    Upload all required documents
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>National ID Card (Front)</Label>
+                      <FileUpload
+                        endpoint="nicFrontUploader"
+                        onChange={(url) => {
+                          form.setValue("nicFrontUrl", url ?? "");
+                          form.clearErrors("nicFrontUrl");
+                        }}
+                      />
+                      {form.formState.errors.nicFrontUrl && (
+                        <p className="text-destructive mt-1 text-xs">
+                          {form.formState.errors.nicFrontUrl.message}
+                        </p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
-                      <span className="text-muted-foreground text-sm">
-                        License Classes:
-                      </span>
-                      <div className="space-y-2">
-                        <div className="bg-muted/30 flex items-center justify-between rounded-md p-2">
-                          <div>
-                            <Badge>Class A</Badge>
-                            <span className="ml-2 text-xs">Motorcycle</span>
-                          </div>
-                          <div className="text-xs">
-                            <span className="text-muted-foreground">
-                              Issue:{" "}
-                            </span>
-                            <span className="font-medium">Apr 13, 2025</span>
-                            <span className="text-muted-foreground ml-2">
-                              Expiry:{" "}
-                            </span>
-                            <span className="font-medium">Apr 13, 2033</span>
-                          </div>
-                        </div>
-                        <div className="bg-muted/30 flex items-center justify-between rounded-md p-2">
-                          <div>
-                            <Badge>Class B</Badge>
-                            <span className="ml-2 text-xs">
-                              Car/Light Vehicle
-                            </span>
-                          </div>
-                          <div className="text-xs">
-                            <span className="text-muted-foreground">
-                              Issue:{" "}
-                            </span>
-                            <span className="font-medium">Apr 13, 2025</span>
-                            <span className="text-muted-foreground ml-2">
-                              Expiry:{" "}
-                            </span>
-                            <span className="font-medium">Apr 13, 2033</span>
-                          </div>
-                        </div>
-                      </div>
+                      <Label>National ID Card (Back)</Label>
+                      <FileUpload
+                        endpoint="nicBackUploader"
+                        onChange={(url) => {
+                          form.setValue("nicBackUrl", url ?? "");
+                          form.clearErrors("nicBackUrl");
+                        }}
+                      />
+                      {form.formState.errors.nicBackUrl && (
+                        <p className="text-destructive mt-1 text-xs">
+                          {form.formState.errors.nicBackUrl.message}
+                        </p>
+                      )}
                     </div>
 
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground text-sm">
-                        Restrictions:
-                      </span>
-                      <span className="text-sm font-medium">
-                        Corrective Lenses
-                      </span>
+                    <div className="space-y-2">
+                      <Label>Medical Certificate</Label>
+                      <FileUpload
+                        endpoint="medicalUploader"
+                        onChange={(url) => {
+                          form.setValue("medicalUrl", url ?? "");
+                          form.clearErrors("medicalUrl");
+                        }}
+                      />
+                      {form.formState.errors.medicalUrl && (
+                        <p className="text-destructive mt-1 text-xs">
+                          {form.formState.errors.medicalUrl.message}
+                        </p>
+                      )}
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
 
-              <div className="bg-muted/30 rounded-lg border p-4">
-                <div className="flex items-center gap-4">
-                  <Avatar className="h-24 w-24">
-                    <AvatarFallback>JS</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="text-lg font-bold">License Preview</h3>
-                    <p className="text-muted-foreground mb-2 text-sm">
-                      Digital license will be generated with the following
-                      information
-                    </p>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" className="gap-2">
-                        <QrCode className="h-4 w-4" />
-                        Generate QR
-                      </Button>
+                    <div className="space-y-2">
+                      <Label>Previous License (if applicable)</Label>
+                      <FileUpload
+                        endpoint="previousLicenseUploader"
+                        onChange={(url) => {
+                          form.setValue("previousLicenseUrl", url ?? "");
+                        }}
+                      />
                     </div>
                   </div>
-                </div>
-              </div>
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                  <Button variant="outline" onClick={() => setTab("details")}>
+                    Back
+                  </Button>
+                  <Button type="button" onClick={handleDocumentsSaveContinue}>
+                    Save & Continue
+                  </Button>
+                </CardFooter>
+              </Card>
+            </TabsContent>
 
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="confirm" />
-                  <label htmlFor="confirm" className="text-sm">
-                    I confirm that all information provided is accurate and
-                    complete
-                  </label>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button variant="outline">Back</Button>
-              <Button>Issue License</Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
+            <TabsContent value="photo">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Photo</CardTitle>
+                  <CardDescription>Capture or upload photo</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-2">
+                    <Label>Photo</Label>
+                    <FileUpload
+                      endpoint="photo"
+                      onChange={(url) => form.setValue("photoUrl", url ?? "")}
+                    />
+                    {form.formState.errors.photoUrl && (
+                      <p className="text-destructive mt-1 text-xs">
+                        {form.formState.errors.photoUrl.message}
+                      </p>
+                    )}
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                  <Button variant="outline">Back</Button>
+                  <Button onClick={handlePhotoSaveContinue}>
+                    Save & Continue
+                  </Button>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="review">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Review & Issue License</CardTitle>
+                  <CardDescription>
+                    Verify all information before issuing
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-base">
+                          Personal Information
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground text-sm">
+                            Full Name:
+                          </span>
+                          <span className="text-sm font-medium">
+                            {getFullName() || "-"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground text-sm">
+                            NIC:
+                          </span>
+                          <span className="text-sm font-medium">
+                            {form.getValues("nic") || "-"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground text-sm">
+                            Date of Birth:
+                          </span>
+                          <span className="text-sm font-medium">
+                            {form.getValues("dateOfBirth")
+                              ? format(
+                                  new Date(form.getValues("dateOfBirth")),
+                                  "PPP",
+                                )
+                              : "-"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground text-sm">
+                            Gender:
+                          </span>
+                          <span className="text-sm font-medium">
+                            {form.getValues("gender")
+                              ? form
+                                  .getValues("gender")
+                                  .charAt(0)
+                                  .toUpperCase() +
+                                form.getValues("gender").slice(1)
+                              : "-"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground text-sm">
+                            Blood Group:
+                          </span>
+                          <span className="text-sm font-medium">
+                            {form.getValues("bloodGroup") || "-"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground text-sm">
+                            Address:
+                          </span>
+                          <span className="text-sm font-medium">
+                            {form.getValues("address") || "-"}
+                          </span>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-base">
+                          License Information
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground text-sm">
+                            License Type:
+                          </span>
+                          <span className="text-sm font-medium">
+                            {form.getValues("licenseType") === "learnersPermit"
+                              ? "Learner's Permit"
+                              : form.getValues("licenseType") === "permanent"
+                                ? "Permanent"
+                                : "-"}
+                          </span>
+                        </div>
+
+                        <div className="space-y-2">
+                          <span className="text-muted-foreground text-sm">
+                            License Classes:
+                          </span>
+                          <div className="space-y-2">
+                            {(form.getValues("licenseClasses") || []).length ===
+                              0 && (
+                              <span className="text-muted-foreground text-xs">
+                                No classes added
+                              </span>
+                            )}
+                            {(form.getValues("licenseClasses") || []).map(
+                              (cls, idx) => (
+                                <div
+                                  key={cls.id || idx}
+                                  className="bg-muted/30 flex items-center justify-between rounded-md p-2"
+                                >
+                                  <div>
+                                    <Badge>
+                                      Class {cls.vehicleClass || "-"}
+                                    </Badge>
+                                    <span className="ml-2 text-xs">
+                                      {getCategoryLabel(cls.vehicleCategory)}
+                                    </span>
+                                  </div>
+                                  <div className="text-xs">
+                                    <span className="text-muted-foreground">
+                                      Issue:{" "}
+                                    </span>
+                                    <span className="font-medium">
+                                      {cls.issueDate
+                                        ? format(new Date(cls.issueDate), "PPP")
+                                        : "-"}
+                                    </span>
+                                    <span className="text-muted-foreground ml-2">
+                                      Expiry:{" "}
+                                    </span>
+                                    <span className="font-medium">
+                                      {cls.expiryDate
+                                        ? format(
+                                            new Date(cls.expiryDate),
+                                            "PPP",
+                                          )
+                                        : "-"}
+                                    </span>
+                                  </div>
+                                </div>
+                              ),
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground text-sm">
+                            Restrictions:
+                          </span>
+                          <span className="text-sm font-medium">
+                            {getRestrictions()}
+                          </span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <div className="bg-muted/30 rounded-lg border p-4">
+                    <div className="flex items-center gap-4">
+                      <Avatar className="h-24 w-24">
+                        {form.getValues("photoUrl") ? (
+                          <Image
+                            src={form.getValues("photoUrl")}
+                            alt="Photo"
+                            height={24}
+                            width={24}
+                            className="h-24 w-24 rounded-full object-cover"
+                          />
+                        ) : (
+                          <AvatarFallback>
+                            {getInitials() || "?"}
+                          </AvatarFallback>
+                        )}
+                      </Avatar>
+                      <div>
+                        <h3 className="text-lg font-bold">License Preview</h3>
+                        <p className="text-muted-foreground mb-2 text-sm">
+                          Digital license will be generated with the following
+                          information
+                        </p>
+                        {/* <div className="flex gap-2">
+                          <Button variant="outline" size="sm" className="gap-2">
+                            <QrCode className="h-4 w-4" />
+                            Generate QR
+                          </Button>
+                        </div> */}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="confirm" />
+                      <label htmlFor="confirm" className="text-sm">
+                        I confirm that all information provided is accurate and
+                        complete
+                      </label>
+                    </div>
+                  </div> */}
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                  <Button variant="outline">Back</Button>
+                  <Button>Issue License</Button>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+          </form>
+        </Form>
       </Tabs>
     </div>
   );

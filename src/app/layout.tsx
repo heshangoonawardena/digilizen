@@ -36,7 +36,7 @@ export default function RootLayout({
             routerConfig={extractRouterConfig(ourFileRouter)}
           />
           {children}
-          <Toaster position="top-right" />
+          <Toaster position="top-right" richColors />
         </body>
       </html>
     </ClerkProvider>
