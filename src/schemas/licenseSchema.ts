@@ -16,8 +16,11 @@ export const licenseSchema = z.object({
   email: z
     .string({ message: "Email is required" })
     .email({ message: "Email address is invalid" }),
+  province: z.enum(["male", "female"], { message: "Province is required" }),
+  district: z.enum(["male", "female"], { message: "District is required" }),
+  city: z.string({ message: "City is required" }).min(1),
   address: z.string({ message: "Address is required" }).min(1),
-  licenseType: z.enum(["learnersPermit", "permanent"], {
+  licenseType: z.enum(["LEARNERSPERMIT", "PERMANENT"], {
     message: "License type is required",
   }),
   correctiveLens: z.boolean().optional(),
@@ -42,6 +45,6 @@ export const licenseSchema = z.object({
     .string()
     .url({ message: "Photo of the back of NIC is requried" }),
   medicalUrl: z.string().url({ message: "Photo of the medical is requried" }),
-  previousLicenseUrl: z.string().url().optional(),
+  previousLicenseUrl: z.union([z.string().url().nullish(), z.literal("")]),
   photoUrl: z.string({ message: "Photo is requried" }).url(),
 });
