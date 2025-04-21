@@ -51,14 +51,7 @@ import { cn } from "@/lib/utils";
 import { licenseSchema } from "@/schemas/licenseSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import {
-  Calendar as CalendarIcon,
-  Camera,
-  QrCode,
-  Save,
-  Upload,
-  UserCheck,
-} from "lucide-react";
+import { Calendar as CalendarIcon, Save, UserCheck } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -111,6 +104,7 @@ export default function NewLicense() {
       lastName: "",
       licenseClasses: [],
       dateOfBirth: undefined,
+      email: "",
       nicFrontUrl: "",
       nicBackUrl: "",
       medicalUrl: "",
@@ -155,7 +149,7 @@ export default function NewLicense() {
         vehicleClass: value.charAt(0).toUpperCase() + value.slice(1),
         expiryDate: new Date(
           issueDate.getTime() +
-            (form.getValues("licenseType") === "learnersPermit"
+            (form.getValues("licenseType") === "LEARNERSPERMIT"
               ? 182 * 24 * 60 * 60 * 1000
               : (categoryExpiryMap[value] ?? 0) * 24 * 60 * 60 * 1000),
         ),
@@ -174,6 +168,9 @@ export default function NewLicense() {
       "gender",
       "bloodGroup",
       "email",
+      "province",
+      "district",
+      "city",
       "address",
       "licenseType",
       "correctiveLens",
@@ -496,25 +493,110 @@ export default function NewLicense() {
                         )}
                       />
                     </div>
+                  </div>
 
-                    <div className="md:col-span-2">
-                      <FormField
-                        control={form.control}
-                        name="address"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Permanant Address</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                placeholder="Enter full address"
-                                {...field}
-                              />
-                            </FormControl>
+                  <Separator />
 
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-medium">Residential Details</h3>
+
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="province"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Province</FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <FormControl className="min-w-full">
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select a province" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="male">setup</SelectItem>
+                                  <SelectItem value="female">setup</SelectItem>
+                                </SelectContent>
+                              </Select>
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="district"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>District</FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <FormControl className="min-w-full">
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select a district" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="male">setup</SelectItem>
+                                  <SelectItem value="female">setup</SelectItem>
+                                </SelectContent>
+                              </Select>
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="col-span-2">
+                        <FormField
+                          control={form.control}
+                          name="city"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>City</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="Enter city"
+                                  type="text"
+                                  {...field}
+                                />
+                              </FormControl>
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="md:col-span-4">
+                        <FormField
+                          control={form.control}
+                          name="address"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Permanant Address</FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  placeholder="Enter full address"
+                                  {...field}
+                                />
+                              </FormControl>
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -543,10 +625,10 @@ export default function NewLicense() {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="learnersPermit">
+                                  <SelectItem value="LEARNERSPERMIT">
                                     Learner&apos;s Permit - L
                                   </SelectItem>
-                                  <SelectItem value="permanent">
+                                  <SelectItem value="PERMANENT">
                                     Permanant - P
                                   </SelectItem>
                                 </SelectContent>
@@ -941,9 +1023,9 @@ export default function NewLicense() {
                             License Type:
                           </span>
                           <span className="text-sm font-medium">
-                            {form.getValues("licenseType") === "learnersPermit"
+                            {form.getValues("licenseType") === "LEARNERSPERMIT"
                               ? "Learner's Permit"
-                              : form.getValues("licenseType") === "permanent"
+                              : form.getValues("licenseType") === "PERMANENT"
                                 ? "Permanent"
                                 : "-"}
                           </span>
@@ -1058,7 +1140,7 @@ export default function NewLicense() {
                 </CardContent>
                 <CardFooter className="flex justify-between">
                   <Button variant="outline">Back</Button>
-                  <Button>Issue License</Button>
+                  <Button type="submit">Issue License</Button>
                 </CardFooter>
               </Card>
             </TabsContent>
