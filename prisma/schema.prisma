@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/app/generated/prisma"
+  output   = "../src/generated/prisma/client"
 }
 
 datasource db {
@@ -21,17 +21,20 @@ model Address {
   deletedAt DateTime? @map("deleted_at")
   deleted   Boolean   @default(false)
 
+  user    User?
+  License License?
+
   @@map("addresses")
 }
 
 model Medical {
-  id                   String   @id @default(cuid())
-  medical_report_photo String   @map("photo")
-  blood_group          String   @map("blood_group")
-  blood_pressure       String   @map("blood_pressure")
+  id                   String     @id @default(cuid())
+  medical_report_photo String     @map("photo")
+  blood_group          BloodGroup @map("blood_group")
+  blood_pressure       String     @map("blood_pressure")
   height               String
   weight               String
-  dateOfBirth          DateTime @map("date_of_birth")
+  dateOfBirth          DateTime   @map("date_of_birth")
   gender               Gender
 
   createdAt DateTime  @default(now()) @map("created_at")
@@ -39,20 +42,25 @@ model Medical {
   deletedAt DateTime? @map("deleted_at")
   deleted   Boolean   @default(false)
 
+  license License?
+
   @@map("medicals")
 }
 
 model VehicleCategory {
-  id                 String @id @default(cuid())
-  vehicleDescription String @map("vehicle_description")
-  vehicleType        String @map("vehicle_type")
-  vehicleClass       String @map("vehicle_class")
-  validityPeriod     Int    @map("validity_period")
+  id                         String   @id @default(cuid())
+  vehicleDescription         String   @map("vehicle_description")
+  vehicleType                String   @map("vehicle_type")
+  vehicleClass               String   @unique @map("vehicle_class")
+  otherAllowedVehicleClasses String[] @map("other_allowed_vehicle_classes")
+  validityPeriod             Int      @map("validity_period")
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
   deleted   Boolean   @default(false)
+
+  licenseVehicleCategories LicenseVehicleCategory[]
 
   @@map("vehicle_categories")
 }
@@ -62,22 +70,29 @@ model License {
   licenseNumber   String        @unique @map("license_number")
   nic             String
   photo           String
-  nicFront        String?       @map("nic_front")
-  nicBack         String?       @map("nic_back")
+  nicFront        String        @map("nic_front")
+  nicBack         String        @map("nic_back")
   previousLicense String?       @map("previous_license")
   phone           String        @map("phone_number")
   firstName       String        @map("first_name")
   lastName        String        @map("last_name")
   licenseType     LicenseType   @map("license_type")
-  status          LicenseStatus @map("license_status")
-  dateOfIssue     DateTime      @map("date_of_issue")
-  dateOfExpiry    DateTime      @map("date_of_expiry")
-
+  status          LicenseStatus @default(ACTIVE) @map("license_status")
+  dateOfIssue     DateTime      @default(now()) @map("date_of_issue")
+  dateOfExpiry    DateTime?     @map("date_of_expiry")
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
   deleted   Boolean   @default(false)
+
+  addressId                String                   @unique @map("address_id")
+  medicalId                String                   @unique @map("medical_id")
+  user                     User?
+  address                  Address                  @relation(fields: [addressId], references: [id])
+  medical                  Medical                  @relation(fields: [medicalId], references: [id])
+  issues                   Issue[]
+  licenseVehicleCategories LicenseVehicleCategory[]
 
   @@map("licenses")
 }
@@ -90,6 +105,15 @@ model User {
   nic       String
   phone     String @map("phone_number")
   email     String @unique
+
+  address       Address     @relation(fields: [addressId], references: [id])
+  addressId     String      @unique @map("address_id")
+  staff         Staff?
+  license       License     @relation(fields: [licenseId], references: [id])
+  licenseId     String      @unique @map("license_id")
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId String
+  logs          Log[]
 
   @@map("users")
 }
@@ -106,21 +130,28 @@ model Staff {
   deletedAt DateTime? @map("deleted_at")
   deleted   Boolean   @default(false)
 
+  user   User    @relation(fields: [userId], references: [id])
+  userId String  @unique @map("user_id")
+  issues Issue[]
+
   @@map("staffs")
 }
 
 model LicenseVehicleCategory {
-  id                String         @id @default(cuid())
-  licenseId         String
-  vehicleCategoryId String         @map("vehicle_category_id")
-  dateOfIssue       DateTime       @map("date_of_issue")
-  dateOfExpiry      DateTime       @map("date_of_expiry")
-  categoryStatus    CategoryStatus @map("category_status")
+  id             String         @id @default(cuid())
+  dateOfIssue    DateTime       @map("date_of_issue")
+  dateOfExpiry   DateTime       @map("date_of_expiry")
+  categoryStatus CategoryStatus @map("category_status")
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
   deleted   Boolean   @default(false)
+
+  vehicleCategoryId String
+  licenseId         String
+  vehicleCategory   VehicleCategory @relation(fields: [vehicleCategoryId], references: [id])
+  license           License         @relation(fields: [licenseId], references: [id])
 
   @@map("license_vehicle_categories")
 }
@@ -139,12 +170,14 @@ model Fine {
   deletedAt DateTime? @map("deleted_at")
   deleted   Boolean   @default(false)
 
+  issues   Issue[]
+  payments Payment[]
+
   @@map("fines")
 }
 
 model Payment {
   id            String        @id @default(cuid())
-  fineId        String
   userId        String
   amount        Float
   paymentStatus PaymentStatus @map("payment_status")
@@ -156,14 +189,16 @@ model Payment {
   deletedAt DateTime? @map("deleted_at")
   deleted   Boolean   @default(false)
 
+  issue   Issue  @relation(fields: [issueId], references: [id])
+  issueId String @unique @map("issue_id")
+  fine    Fine   @relation(fields: [fineId], references: [id])
+  fineId  String @map("fine_id")
+
   @@map("payments")
 }
 
 model Issue {
   id        String      @id @default(cuid())
-  fineId    String
-  staffId   String      @map("staff_id")
-  licenseId String
   paymentId String      @map("payment_id")
   vehicleNo String      @map("vehicle_number")
   courtDate DateTime    @map("court_date")
@@ -174,6 +209,14 @@ model Issue {
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
   deleted   Boolean   @default(false)
+
+  fine       Fine     @relation(fields: [fineId], references: [id])
+  fineId     String   @map("fine_id")
+  staff      Staff    @relation(fields: [enforcerId], references: [id])
+  enforcerId String   @map("enforcer_id")
+  payment    Payment?
+  license    License  @relation(fields: [licenseId], references: [id])
+  licenseId  String   @unique @map("license_id")
 
   @@map("issues")
 }
@@ -190,6 +233,8 @@ model Appointment {
   deletedAt DateTime? @map("deleted_at")
   deleted   Boolean   @default(false)
 
+  users User[]
+
   @@map("appointments")
 }
 
@@ -198,7 +243,6 @@ model Log {
   tableName String   @map("table_name")
   recordId  String   @map("record_id")
   action    Action
-  userId    String   @map("user_id")
   oldValue  String   @map("old_value")
   newValue  String   @map("new_value")
   timestamp DateTime @map("timestamp")
@@ -208,9 +252,11 @@ model Log {
   deletedAt DateTime? @map("deleted_at")
   deleted   Boolean   @default(false)
 
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
   @@map("logs")
 }
-
 
 // enums
 enum Province {
@@ -287,4 +333,15 @@ enum Action {
   CREATE
   UPDATE
   DELETE
+}
+
+enum BloodGroup {
+  A_POS  @map("A+")
+  A_NEG  @map("A-")
+  B_POS  @map("B+")
+  B_NEG  @map("B-")
+  AB_POS @map("AB+")
+  AB_NEG @map("AB-")
+  O_POS  @map("O+")
+  O_NEG  @map("O-")
 }

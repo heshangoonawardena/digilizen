@@ -47,6 +47,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { FileUpload } from "@/components/upload/fileUpload";
+import { BloodGroup, Gender, Province } from "@/generated/prisma";
 import { cn } from "@/lib/utils";
 import { licenseSchema } from "@/schemas/licenseSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -56,7 +57,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
+import { type z } from "zod";
 
 const vehicleCategories = [
   { class: "A1", label: "Light motor cycles", value: "A1" },
@@ -74,7 +75,9 @@ const vehicleCategories = [
   { class: "J", label: "Special purpose Vehicle", value: "J" },
 ];
 
-const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+const bloodGroups = Object.values(BloodGroup);
+const genders = Object.values(Gender);
+const provinces = Object.values(Province);
 
 const categoryExpiryMap: Record<string, number> = {
   A1: 365 * 5, // 5 years
@@ -431,8 +434,12 @@ export default function NewLicense() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="male">Male</SelectItem>
-                                <SelectItem value="female">Female</SelectItem>
+                                {genders.map((gender) => (
+                                  <SelectItem key={gender} value={gender}>
+                                    {gender.charAt(0) +
+                                      gender.slice(1).toLowerCase()}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
 
@@ -518,8 +525,12 @@ export default function NewLicense() {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="male">setup</SelectItem>
-                                  <SelectItem value="female">setup</SelectItem>
+                                  {provinces.map((province) => (
+                                    <SelectItem key={province} value={province}>
+                                      {province.charAt(0) +
+                                        province.slice(1).toLowerCase()}
+                                    </SelectItem>
+                                  ))}
                                 </SelectContent>
                               </Select>
 
