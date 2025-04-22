@@ -1,0 +1,347 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Address {
+  id       String   @id @default(cuid())
+  address  String
+  city     String
+  district String
+  province Province
+  country  String   @default("Sri Lanka")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  deleted   Boolean   @default(false)
+
+  user    User?
+  License License?
+
+  @@map("addresses")
+}
+
+model Medical {
+  id                   String     @id @default(cuid())
+  medical_report_photo String     @map("photo")
+  blood_group          BloodGroup @map("blood_group")
+  blood_pressure       String     @map("blood_pressure")
+  height               String
+  weight               String
+  dateOfBirth          DateTime   @map("date_of_birth")
+  gender               Gender
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  deleted   Boolean   @default(false)
+
+  license License?
+
+  @@map("medicals")
+}
+
+model VehicleCategory {
+  id                         String   @id @default(cuid())
+  vehicleDescription         String   @map("vehicle_description")
+  vehicleType                String   @map("vehicle_type")
+  vehicleClass               String   @unique @map("vehicle_class")
+  otherAllowedVehicleClasses String[] @map("other_allowed_vehicle_classes")
+  validityPeriod             Int      @map("validity_period")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  deleted   Boolean   @default(false)
+
+  licenseVehicleCategories LicenseVehicleCategory[]
+
+  @@map("vehicle_categories")
+}
+
+model License {
+  id              String        @id @default(cuid())
+  licenseNumber   String        @unique @map("license_number")
+  nic             String
+  photo           String
+  nicFront        String        @map("nic_front")
+  nicBack         String        @map("nic_back")
+  previousLicense String?       @map("previous_license")
+  phone           String        @map("phone_number")
+  firstName       String        @map("first_name")
+  lastName        String        @map("last_name")
+  licenseType     LicenseType   @map("license_type")
+  status          LicenseStatus @default(ACTIVE) @map("license_status")
+  dateOfIssue     DateTime      @default(now()) @map("date_of_issue")
+  dateOfExpiry    DateTime?     @map("date_of_expiry")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  deleted   Boolean   @default(false)
+
+  addressId                String                   @unique @map("address_id")
+  medicalId                String                   @unique @map("medical_id")
+  user                     User?
+  address                  Address                  @relation(fields: [addressId], references: [id])
+  medical                  Medical                  @relation(fields: [medicalId], references: [id])
+  issues                   Issue[]
+  licenseVehicleCategories LicenseVehicleCategory[]
+
+  @@map("licenses")
+}
+
+model User {
+  id        String @id @default(cuid())
+  clerkId   String @unique @map("clerk_id")
+  firstName String @map("first_name")
+  lastName  String @map("last_name")
+  nic       String
+  phone     String @map("phone_number")
+  email     String @unique
+
+  address       Address     @relation(fields: [addressId], references: [id])
+  addressId     String      @unique @map("address_id")
+  staff         Staff?
+  license       License     @relation(fields: [licenseId], references: [id])
+  licenseId     String      @unique @map("license_id")
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId String
+  logs          Log[]
+
+  @@map("users")
+}
+
+model Staff {
+  id            String  @id @default(cuid())
+  contactNumber String  @map("work_contact_number")
+  email         String  @unique @map("work_email")
+  role          Role
+  permission    String?
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  deleted   Boolean   @default(false)
+
+  user   User    @relation(fields: [userId], references: [id])
+  userId String  @unique @map("user_id")
+  issues Issue[]
+
+  @@map("staffs")
+}
+
+model LicenseVehicleCategory {
+  id             String         @id @default(cuid())
+  dateOfIssue    DateTime       @map("date_of_issue")
+  dateOfExpiry   DateTime       @map("date_of_expiry")
+  categoryStatus CategoryStatus @map("category_status")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  deleted   Boolean   @default(false)
+
+  vehicleCategoryId String
+  licenseId         String
+  vehicleCategory   VehicleCategory @relation(fields: [vehicleCategoryId], references: [id])
+  license           License         @relation(fields: [licenseId], references: [id])
+
+  @@map("license_vehicle_categories")
+}
+
+model Fine {
+  id                   String @id @default(cuid())
+  fineCategory         String @map("fine_category")
+  violationType        String @map("violation_type")
+  fineCharge           Float  @map("fine_charge")
+  provision            String
+  sectionOfAct         String @map("section_of_act")
+  violationDescription String @map("violation_description")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  deleted   Boolean   @default(false)
+
+  issues   Issue[]
+  payments Payment[]
+
+  @@map("fines")
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  userId        String
+  amount        Float
+  paymentStatus PaymentStatus @map("payment_status")
+  transactionId String        @map("transaction_id")
+  paymentDate   DateTime      @map("payment_date")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  deleted   Boolean   @default(false)
+
+  issue   Issue  @relation(fields: [issueId], references: [id])
+  issueId String @unique @map("issue_id")
+  fine    Fine   @relation(fields: [fineId], references: [id])
+  fineId  String @map("fine_id")
+
+  @@map("payments")
+}
+
+model Issue {
+  id        String      @id @default(cuid())
+  paymentId String      @map("payment_id")
+  vehicleNo String      @map("vehicle_number")
+  courtDate DateTime    @map("court_date")
+  location  String
+  status    IssueStatus
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  deleted   Boolean   @default(false)
+
+  fine       Fine     @relation(fields: [fineId], references: [id])
+  fineId     String   @map("fine_id")
+  staff      Staff    @relation(fields: [enforcerId], references: [id])
+  enforcerId String   @map("enforcer_id")
+  payment    Payment?
+  license    License  @relation(fields: [licenseId], references: [id])
+  licenseId  String   @unique @map("license_id")
+
+  @@map("issues")
+}
+
+model Appointment {
+  id          String            @id @default(cuid())
+  userId      String            @map("user_id")
+  type        AppointmentType
+  scheduledAt DateTime          @map("scheduled_at")
+  status      AppointmentStatus
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  deleted   Boolean   @default(false)
+
+  users User[]
+
+  @@map("appointments")
+}
+
+model Log {
+  id        String   @id @default(cuid())
+  tableName String   @map("table_name")
+  recordId  String   @map("record_id")
+  action    Action
+  oldValue  String   @map("old_value")
+  newValue  String   @map("new_value")
+  timestamp DateTime @map("timestamp")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  deleted   Boolean   @default(false)
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  @@map("logs")
+}
+
+// enums
+enum Province {
+  WESTERN
+  CENTRAL
+  SOUTHERN
+  NORTHERN
+  EASTERN
+  NORTHWESTERN
+  NORTHCENTRAL
+  UVA
+  SABARAGAMUWA
+}
+
+enum LicenseType {
+  LEARNERSPERMIT
+  PERMANENT
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum LicenseStatus {
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+}
+
+enum CategoryStatus {
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+  REVOKED
+}
+
+enum Role {
+  TRAFFIC_OFFICER
+  POLICE_SERGEANT
+  SENIOR_OFFICER
+  ADMIN
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum IssueStatus {
+  ISSUED
+  DISPUTED
+  PAID
+  ESCALATED_TO_COURT
+  WARRANT_ISSUED
+}
+
+enum AppointmentType {
+  RENEWAL
+  DISPUTED
+  COURT
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum Action {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+enum BloodGroup {
+  A_POS  @map("A+")
+  A_NEG  @map("A-")
+  B_POS  @map("B+")
+  B_NEG  @map("B-")
+  AB_POS @map("AB+")
+  AB_NEG @map("AB-")
+  O_POS  @map("O+")
+  O_NEG  @map("O-")
+}
