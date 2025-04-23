@@ -1,4 +1,4 @@
-import {PrismaClient, Province, Gender } from '../src/generated/prisma';
+import {PrismaClient, Province, Gender, District } from '../src/generated/prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -9,14 +9,14 @@ async function main() {
       {
         address: '123 Main Street',
         city: 'Colombo',
-        district: 'Colombo',
+        district: District.COLOMBO,
         province: Province.WESTERN,
         country: 'Sri Lanka',
       },
       {
         address: '456 Second Street',
         city: 'Kandy',
-        district: 'Kandy',
+        district: District.KANDY,
         province: Province.CENTRAL,
         country: 'Sri Lanka',
       },

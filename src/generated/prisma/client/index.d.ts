@@ -93,8 +93,39 @@ export namespace $Enums {
 export type Province = (typeof Province)[keyof typeof Province]
 
 
+export const District: {
+  AMPARA: 'AMPARA',
+  ANURADHAPURA: 'ANURADHAPURA',
+  BADULLA: 'BADULLA',
+  BATTICALOA: 'BATTICALOA',
+  COLOMBO: 'COLOMBO',
+  GALLE: 'GALLE',
+  GAMPAHA: 'GAMPAHA',
+  HAMBANTOTA: 'HAMBANTOTA',
+  JAFFNA: 'JAFFNA',
+  KALUTARA: 'KALUTARA',
+  KANDY: 'KANDY',
+  KEGALLE: 'KEGALLE',
+  KILINOCHCHI: 'KILINOCHCHI',
+  KURUNEGALA: 'KURUNEGALA',
+  MANNAR: 'MANNAR',
+  MATALE: 'MATALE',
+  MATARA: 'MATARA',
+  MONARAGALA: 'MONARAGALA',
+  MULLAITIVU: 'MULLAITIVU',
+  NUWARA_ELIYA: 'NUWARA_ELIYA',
+  POLONNARUWA: 'POLONNARUWA',
+  PUTTALAM: 'PUTTALAM',
+  RATNAPURA: 'RATNAPURA',
+  TRINCOMALEE: 'TRINCOMALEE',
+  VAVUNIYA: 'VAVUNIYA'
+};
+
+export type District = (typeof District)[keyof typeof District]
+
+
 export const LicenseType: {
-  LEARNERSPERMIT: 'LEARNERSPERMIT',
+  LEARNER: 'LEARNER',
   PERMANENT: 'PERMANENT'
 };
 
@@ -205,6 +236,10 @@ export type BloodGroup = (typeof BloodGroup)[keyof typeof BloodGroup]
 export type Province = $Enums.Province
 
 export const Province: typeof $Enums.Province
+
+export type District = $Enums.District
+
+export const District: typeof $Enums.District
 
 export type LicenseType = $Enums.LicenseType
 
@@ -2263,7 +2298,7 @@ export namespace Prisma {
     id: string | null
     address: string | null
     city: string | null
-    district: string | null
+    district: $Enums.District | null
     province: $Enums.Province | null
     country: string | null
     createdAt: Date | null
@@ -2276,7 +2311,7 @@ export namespace Prisma {
     id: string | null
     address: string | null
     city: string | null
-    district: string | null
+    district: $Enums.District | null
     province: $Enums.Province | null
     country: string | null
     createdAt: Date | null
@@ -2416,7 +2451,7 @@ export namespace Prisma {
     id: string
     address: string
     city: string
-    district: string
+    district: $Enums.District
     province: $Enums.Province
     country: string
     createdAt: Date
@@ -2514,7 +2549,7 @@ export namespace Prisma {
       id: string
       address: string
       city: string
-      district: string
+      district: $Enums.District
       province: $Enums.Province
       country: string
       createdAt: Date
@@ -2949,7 +2984,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Address", 'String'>
     readonly address: FieldRef<"Address", 'String'>
     readonly city: FieldRef<"Address", 'String'>
-    readonly district: FieldRef<"Address", 'String'>
+    readonly district: FieldRef<"Address", 'District'>
     readonly province: FieldRef<"Address", 'Province'>
     readonly country: FieldRef<"Address", 'String'>
     readonly createdAt: FieldRef<"Address", 'DateTime'>
@@ -3579,9 +3614,9 @@ export namespace Prisma {
     id: string
     medical_report_photo: string
     blood_group: $Enums.BloodGroup
-    blood_pressure: string
-    height: string
-    weight: string
+    blood_pressure: string | null
+    height: string | null
+    weight: string | null
     dateOfBirth: Date
     gender: $Enums.Gender
     createdAt: Date
@@ -3684,9 +3719,9 @@ export namespace Prisma {
       id: string
       medical_report_photo: string
       blood_group: $Enums.BloodGroup
-      blood_pressure: string
-      height: string
-      weight: string
+      blood_pressure: string | null
+      height: string | null
+      weight: string | null
       dateOfBirth: Date
       gender: $Enums.Gender
       createdAt: Date
@@ -16679,6 +16714,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'District'
+   */
+  export type EnumDistrictFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'District'>
+    
+
+
+  /**
+   * Reference to a field of type 'District[]'
+   */
+  export type ListEnumDistrictFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'District[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Province'
    */
   export type EnumProvinceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Province'>
@@ -16905,7 +16954,7 @@ export namespace Prisma {
     id?: StringFilter<"Address"> | string
     address?: StringFilter<"Address"> | string
     city?: StringFilter<"Address"> | string
-    district?: StringFilter<"Address"> | string
+    district?: EnumDistrictFilter<"Address"> | $Enums.District
     province?: EnumProvinceFilter<"Address"> | $Enums.Province
     country?: StringFilter<"Address"> | string
     createdAt?: DateTimeFilter<"Address"> | Date | string
@@ -16938,7 +16987,7 @@ export namespace Prisma {
     NOT?: AddressWhereInput | AddressWhereInput[]
     address?: StringFilter<"Address"> | string
     city?: StringFilter<"Address"> | string
-    district?: StringFilter<"Address"> | string
+    district?: EnumDistrictFilter<"Address"> | $Enums.District
     province?: EnumProvinceFilter<"Address"> | $Enums.Province
     country?: StringFilter<"Address"> | string
     createdAt?: DateTimeFilter<"Address"> | Date | string
@@ -16972,7 +17021,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Address"> | string
     address?: StringWithAggregatesFilter<"Address"> | string
     city?: StringWithAggregatesFilter<"Address"> | string
-    district?: StringWithAggregatesFilter<"Address"> | string
+    district?: EnumDistrictWithAggregatesFilter<"Address"> | $Enums.District
     province?: EnumProvinceWithAggregatesFilter<"Address"> | $Enums.Province
     country?: StringWithAggregatesFilter<"Address"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Address"> | Date | string
@@ -16988,9 +17037,9 @@ export namespace Prisma {
     id?: StringFilter<"Medical"> | string
     medical_report_photo?: StringFilter<"Medical"> | string
     blood_group?: EnumBloodGroupFilter<"Medical"> | $Enums.BloodGroup
-    blood_pressure?: StringFilter<"Medical"> | string
-    height?: StringFilter<"Medical"> | string
-    weight?: StringFilter<"Medical"> | string
+    blood_pressure?: StringNullableFilter<"Medical"> | string | null
+    height?: StringNullableFilter<"Medical"> | string | null
+    weight?: StringNullableFilter<"Medical"> | string | null
     dateOfBirth?: DateTimeFilter<"Medical"> | Date | string
     gender?: EnumGenderFilter<"Medical"> | $Enums.Gender
     createdAt?: DateTimeFilter<"Medical"> | Date | string
@@ -17004,9 +17053,9 @@ export namespace Prisma {
     id?: SortOrder
     medical_report_photo?: SortOrder
     blood_group?: SortOrder
-    blood_pressure?: SortOrder
-    height?: SortOrder
-    weight?: SortOrder
+    blood_pressure?: SortOrderInput | SortOrder
+    height?: SortOrderInput | SortOrder
+    weight?: SortOrderInput | SortOrder
     dateOfBirth?: SortOrder
     gender?: SortOrder
     createdAt?: SortOrder
@@ -17023,9 +17072,9 @@ export namespace Prisma {
     NOT?: MedicalWhereInput | MedicalWhereInput[]
     medical_report_photo?: StringFilter<"Medical"> | string
     blood_group?: EnumBloodGroupFilter<"Medical"> | $Enums.BloodGroup
-    blood_pressure?: StringFilter<"Medical"> | string
-    height?: StringFilter<"Medical"> | string
-    weight?: StringFilter<"Medical"> | string
+    blood_pressure?: StringNullableFilter<"Medical"> | string | null
+    height?: StringNullableFilter<"Medical"> | string | null
+    weight?: StringNullableFilter<"Medical"> | string | null
     dateOfBirth?: DateTimeFilter<"Medical"> | Date | string
     gender?: EnumGenderFilter<"Medical"> | $Enums.Gender
     createdAt?: DateTimeFilter<"Medical"> | Date | string
@@ -17039,9 +17088,9 @@ export namespace Prisma {
     id?: SortOrder
     medical_report_photo?: SortOrder
     blood_group?: SortOrder
-    blood_pressure?: SortOrder
-    height?: SortOrder
-    weight?: SortOrder
+    blood_pressure?: SortOrderInput | SortOrder
+    height?: SortOrderInput | SortOrder
+    weight?: SortOrderInput | SortOrder
     dateOfBirth?: SortOrder
     gender?: SortOrder
     createdAt?: SortOrder
@@ -17060,9 +17109,9 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Medical"> | string
     medical_report_photo?: StringWithAggregatesFilter<"Medical"> | string
     blood_group?: EnumBloodGroupWithAggregatesFilter<"Medical"> | $Enums.BloodGroup
-    blood_pressure?: StringWithAggregatesFilter<"Medical"> | string
-    height?: StringWithAggregatesFilter<"Medical"> | string
-    weight?: StringWithAggregatesFilter<"Medical"> | string
+    blood_pressure?: StringNullableWithAggregatesFilter<"Medical"> | string | null
+    height?: StringNullableWithAggregatesFilter<"Medical"> | string | null
+    weight?: StringNullableWithAggregatesFilter<"Medical"> | string | null
     dateOfBirth?: DateTimeWithAggregatesFilter<"Medical"> | Date | string
     gender?: EnumGenderWithAggregatesFilter<"Medical"> | $Enums.Gender
     createdAt?: DateTimeWithAggregatesFilter<"Medical"> | Date | string
@@ -18011,7 +18060,7 @@ export namespace Prisma {
     id?: string
     address: string
     city: string
-    district: string
+    district: $Enums.District
     province: $Enums.Province
     country?: string
     createdAt?: Date | string
@@ -18026,7 +18075,7 @@ export namespace Prisma {
     id?: string
     address: string
     city: string
-    district: string
+    district: $Enums.District
     province: $Enums.Province
     country?: string
     createdAt?: Date | string
@@ -18041,7 +18090,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
+    district?: EnumDistrictFieldUpdateOperationsInput | $Enums.District
     province?: EnumProvinceFieldUpdateOperationsInput | $Enums.Province
     country?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18056,7 +18105,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
+    district?: EnumDistrictFieldUpdateOperationsInput | $Enums.District
     province?: EnumProvinceFieldUpdateOperationsInput | $Enums.Province
     country?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18071,7 +18120,7 @@ export namespace Prisma {
     id?: string
     address: string
     city: string
-    district: string
+    district: $Enums.District
     province: $Enums.Province
     country?: string
     createdAt?: Date | string
@@ -18084,7 +18133,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
+    district?: EnumDistrictFieldUpdateOperationsInput | $Enums.District
     province?: EnumProvinceFieldUpdateOperationsInput | $Enums.Province
     country?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18097,7 +18146,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
+    district?: EnumDistrictFieldUpdateOperationsInput | $Enums.District
     province?: EnumProvinceFieldUpdateOperationsInput | $Enums.Province
     country?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18110,9 +18159,9 @@ export namespace Prisma {
     id?: string
     medical_report_photo: string
     blood_group: $Enums.BloodGroup
-    blood_pressure: string
-    height: string
-    weight: string
+    blood_pressure?: string | null
+    height?: string | null
+    weight?: string | null
     dateOfBirth: Date | string
     gender: $Enums.Gender
     createdAt?: Date | string
@@ -18126,9 +18175,9 @@ export namespace Prisma {
     id?: string
     medical_report_photo: string
     blood_group: $Enums.BloodGroup
-    blood_pressure: string
-    height: string
-    weight: string
+    blood_pressure?: string | null
+    height?: string | null
+    weight?: string | null
     dateOfBirth: Date | string
     gender: $Enums.Gender
     createdAt?: Date | string
@@ -18142,9 +18191,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     medical_report_photo?: StringFieldUpdateOperationsInput | string
     blood_group?: EnumBloodGroupFieldUpdateOperationsInput | $Enums.BloodGroup
-    blood_pressure?: StringFieldUpdateOperationsInput | string
-    height?: StringFieldUpdateOperationsInput | string
-    weight?: StringFieldUpdateOperationsInput | string
+    blood_pressure?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableStringFieldUpdateOperationsInput | string | null
+    weight?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
     gender?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18158,9 +18207,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     medical_report_photo?: StringFieldUpdateOperationsInput | string
     blood_group?: EnumBloodGroupFieldUpdateOperationsInput | $Enums.BloodGroup
-    blood_pressure?: StringFieldUpdateOperationsInput | string
-    height?: StringFieldUpdateOperationsInput | string
-    weight?: StringFieldUpdateOperationsInput | string
+    blood_pressure?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableStringFieldUpdateOperationsInput | string | null
+    weight?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
     gender?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18174,9 +18223,9 @@ export namespace Prisma {
     id?: string
     medical_report_photo: string
     blood_group: $Enums.BloodGroup
-    blood_pressure: string
-    height: string
-    weight: string
+    blood_pressure?: string | null
+    height?: string | null
+    weight?: string | null
     dateOfBirth: Date | string
     gender: $Enums.Gender
     createdAt?: Date | string
@@ -18189,9 +18238,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     medical_report_photo?: StringFieldUpdateOperationsInput | string
     blood_group?: EnumBloodGroupFieldUpdateOperationsInput | $Enums.BloodGroup
-    blood_pressure?: StringFieldUpdateOperationsInput | string
-    height?: StringFieldUpdateOperationsInput | string
-    weight?: StringFieldUpdateOperationsInput | string
+    blood_pressure?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableStringFieldUpdateOperationsInput | string | null
+    weight?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
     gender?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18204,9 +18253,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     medical_report_photo?: StringFieldUpdateOperationsInput | string
     blood_group?: EnumBloodGroupFieldUpdateOperationsInput | $Enums.BloodGroup
-    blood_pressure?: StringFieldUpdateOperationsInput | string
-    height?: StringFieldUpdateOperationsInput | string
-    weight?: StringFieldUpdateOperationsInput | string
+    blood_pressure?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableStringFieldUpdateOperationsInput | string | null
+    weight?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
     gender?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19289,6 +19338,13 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type EnumDistrictFilter<$PrismaModel = never> = {
+    equals?: $Enums.District | EnumDistrictFieldRefInput<$PrismaModel>
+    in?: $Enums.District[] | ListEnumDistrictFieldRefInput<$PrismaModel>
+    notIn?: $Enums.District[] | ListEnumDistrictFieldRefInput<$PrismaModel>
+    not?: NestedEnumDistrictFilter<$PrismaModel> | $Enums.District
+  }
+
   export type EnumProvinceFilter<$PrismaModel = never> = {
     equals?: $Enums.Province | EnumProvinceFieldRefInput<$PrismaModel>
     in?: $Enums.Province[] | ListEnumProvinceFieldRefInput<$PrismaModel>
@@ -19395,6 +19451,16 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
+  export type EnumDistrictWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.District | EnumDistrictFieldRefInput<$PrismaModel>
+    in?: $Enums.District[] | ListEnumDistrictFieldRefInput<$PrismaModel>
+    notIn?: $Enums.District[] | ListEnumDistrictFieldRefInput<$PrismaModel>
+    not?: NestedEnumDistrictWithAggregatesFilter<$PrismaModel> | $Enums.District
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDistrictFilter<$PrismaModel>
+    _max?: NestedEnumDistrictFilter<$PrismaModel>
+  }
+
   export type EnumProvinceWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.Province | EnumProvinceFieldRefInput<$PrismaModel>
     in?: $Enums.Province[] | ListEnumProvinceFieldRefInput<$PrismaModel>
@@ -19446,6 +19512,21 @@ export namespace Prisma {
     in?: $Enums.BloodGroup[] | ListEnumBloodGroupFieldRefInput<$PrismaModel>
     notIn?: $Enums.BloodGroup[] | ListEnumBloodGroupFieldRefInput<$PrismaModel>
     not?: NestedEnumBloodGroupFilter<$PrismaModel> | $Enums.BloodGroup
+  }
+
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type EnumGenderFilter<$PrismaModel = never> = {
@@ -19508,6 +19589,24 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumBloodGroupFilter<$PrismaModel>
     _max?: NestedEnumBloodGroupFilter<$PrismaModel>
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type EnumGenderWithAggregatesFilter<$PrismaModel = never> = {
@@ -19608,21 +19707,6 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type EnumLicenseTypeFilter<$PrismaModel = never> = {
@@ -19726,24 +19810,6 @@ export namespace Prisma {
     deleted?: SortOrder
     addressId?: SortOrder
     medicalId?: SortOrder
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type EnumLicenseTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -20364,6 +20430,10 @@ export namespace Prisma {
     set?: string
   }
 
+  export type EnumDistrictFieldUpdateOperationsInput = {
+    set?: $Enums.District
+  }
+
   export type EnumProvinceFieldUpdateOperationsInput = {
     set?: $Enums.Province
   }
@@ -20434,6 +20504,10 @@ export namespace Prisma {
 
   export type EnumBloodGroupFieldUpdateOperationsInput = {
     set?: $Enums.BloodGroup
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type EnumGenderFieldUpdateOperationsInput = {
@@ -20569,10 +20643,6 @@ export namespace Prisma {
     connectOrCreate?: LicenseVehicleCategoryCreateOrConnectWithoutLicenseInput | LicenseVehicleCategoryCreateOrConnectWithoutLicenseInput[]
     createMany?: LicenseVehicleCategoryCreateManyLicenseInputEnvelope
     connect?: LicenseVehicleCategoryWhereUniqueInput | LicenseVehicleCategoryWhereUniqueInput[]
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type EnumLicenseTypeFieldUpdateOperationsInput = {
@@ -21167,6 +21237,13 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedEnumDistrictFilter<$PrismaModel = never> = {
+    equals?: $Enums.District | EnumDistrictFieldRefInput<$PrismaModel>
+    in?: $Enums.District[] | ListEnumDistrictFieldRefInput<$PrismaModel>
+    notIn?: $Enums.District[] | ListEnumDistrictFieldRefInput<$PrismaModel>
+    not?: NestedEnumDistrictFilter<$PrismaModel> | $Enums.District
+  }
+
   export type NestedEnumProvinceFilter<$PrismaModel = never> = {
     equals?: $Enums.Province | EnumProvinceFieldRefInput<$PrismaModel>
     in?: $Enums.Province[] | ListEnumProvinceFieldRefInput<$PrismaModel>
@@ -21227,6 +21304,16 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type NestedEnumDistrictWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.District | EnumDistrictFieldRefInput<$PrismaModel>
+    in?: $Enums.District[] | ListEnumDistrictFieldRefInput<$PrismaModel>
+    notIn?: $Enums.District[] | ListEnumDistrictFieldRefInput<$PrismaModel>
+    not?: NestedEnumDistrictWithAggregatesFilter<$PrismaModel> | $Enums.District
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDistrictFilter<$PrismaModel>
+    _max?: NestedEnumDistrictFilter<$PrismaModel>
   }
 
   export type NestedEnumProvinceWithAggregatesFilter<$PrismaModel = never> = {
@@ -21293,6 +21380,20 @@ export namespace Prisma {
     not?: NestedEnumBloodGroupFilter<$PrismaModel> | $Enums.BloodGroup
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type NestedEnumGenderFilter<$PrismaModel = never> = {
     equals?: $Enums.Gender | EnumGenderFieldRefInput<$PrismaModel>
     in?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel>
@@ -21308,6 +21409,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumBloodGroupFilter<$PrismaModel>
     _max?: NestedEnumBloodGroupFilter<$PrismaModel>
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumGenderWithAggregatesFilter<$PrismaModel = never> = {
@@ -21347,20 +21465,6 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
   export type NestedEnumLicenseTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.LicenseType | EnumLicenseTypeFieldRefInput<$PrismaModel>
     in?: $Enums.LicenseType[] | ListEnumLicenseTypeFieldRefInput<$PrismaModel>
@@ -21373,23 +21477,6 @@ export namespace Prisma {
     in?: $Enums.LicenseStatus[] | ListEnumLicenseStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.LicenseStatus[] | ListEnumLicenseStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumLicenseStatusFilter<$PrismaModel> | $Enums.LicenseStatus
-  }
-
-  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumLicenseTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -21954,7 +22041,7 @@ export namespace Prisma {
     id?: string
     address: string
     city: string
-    district: string
+    district: $Enums.District
     province: $Enums.Province
     country?: string
     createdAt?: Date | string
@@ -21968,7 +22055,7 @@ export namespace Prisma {
     id?: string
     address: string
     city: string
-    district: string
+    district: $Enums.District
     province: $Enums.Province
     country?: string
     createdAt?: Date | string
@@ -21987,9 +22074,9 @@ export namespace Prisma {
     id?: string
     medical_report_photo: string
     blood_group: $Enums.BloodGroup
-    blood_pressure: string
-    height: string
-    weight: string
+    blood_pressure?: string | null
+    height?: string | null
+    weight?: string | null
     dateOfBirth: Date | string
     gender: $Enums.Gender
     createdAt?: Date | string
@@ -22002,9 +22089,9 @@ export namespace Prisma {
     id?: string
     medical_report_photo: string
     blood_group: $Enums.BloodGroup
-    blood_pressure: string
-    height: string
-    weight: string
+    blood_pressure?: string | null
+    height?: string | null
+    weight?: string | null
     dateOfBirth: Date | string
     gender: $Enums.Gender
     createdAt?: Date | string
@@ -22148,7 +22235,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
+    district?: EnumDistrictFieldUpdateOperationsInput | $Enums.District
     province?: EnumProvinceFieldUpdateOperationsInput | $Enums.Province
     country?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22162,7 +22249,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
+    district?: EnumDistrictFieldUpdateOperationsInput | $Enums.District
     province?: EnumProvinceFieldUpdateOperationsInput | $Enums.Province
     country?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22187,9 +22274,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     medical_report_photo?: StringFieldUpdateOperationsInput | string
     blood_group?: EnumBloodGroupFieldUpdateOperationsInput | $Enums.BloodGroup
-    blood_pressure?: StringFieldUpdateOperationsInput | string
-    height?: StringFieldUpdateOperationsInput | string
-    weight?: StringFieldUpdateOperationsInput | string
+    blood_pressure?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableStringFieldUpdateOperationsInput | string | null
+    weight?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
     gender?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22202,9 +22289,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     medical_report_photo?: StringFieldUpdateOperationsInput | string
     blood_group?: EnumBloodGroupFieldUpdateOperationsInput | $Enums.BloodGroup
-    blood_pressure?: StringFieldUpdateOperationsInput | string
-    height?: StringFieldUpdateOperationsInput | string
-    weight?: StringFieldUpdateOperationsInput | string
+    blood_pressure?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableStringFieldUpdateOperationsInput | string | null
+    weight?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
     gender?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22268,7 +22355,7 @@ export namespace Prisma {
     id?: string
     address: string
     city: string
-    district: string
+    district: $Enums.District
     province: $Enums.Province
     country?: string
     createdAt?: Date | string
@@ -22282,7 +22369,7 @@ export namespace Prisma {
     id?: string
     address: string
     city: string
-    district: string
+    district: $Enums.District
     province: $Enums.Province
     country?: string
     createdAt?: Date | string
@@ -22465,7 +22552,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
+    district?: EnumDistrictFieldUpdateOperationsInput | $Enums.District
     province?: EnumProvinceFieldUpdateOperationsInput | $Enums.Province
     country?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22479,7 +22566,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
+    district?: EnumDistrictFieldUpdateOperationsInput | $Enums.District
     province?: EnumProvinceFieldUpdateOperationsInput | $Enums.Province
     country?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
