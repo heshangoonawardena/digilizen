@@ -56,7 +56,7 @@ export async function createLicense(newLicense: unknown) {
         medical_report_photo: validatedData.medicalUrl,
         blood_group: validatedData.bloodGroup,
         dateOfBirth: new Date(validatedData.dateOfBirth),
-        gender: validatedData.gender,
+        gender: validatedData.gender
       },
     });
 
