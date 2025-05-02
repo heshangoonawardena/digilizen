@@ -104,11 +104,15 @@ const AddLicenseForm = () => {
   >([]);
 
   useEffect(() => {
-    async function fetchCategories() {
-      const cats = await getVehicleCategories();
-      setVehicleCategories(cats);
-    }
-    fetchCategories();
+    const fetchCategories = async () => {
+      try {
+        const cats = await getVehicleCategories();
+        setVehicleCategories(cats);
+      } catch (error) {
+        console.error("Failed to fetch vehicle categories", error);
+      }
+    };
+    void fetchCategories();
   }, []);
 
   // Helper to get vehicle category and class label by value
@@ -218,6 +222,7 @@ const AddLicenseForm = () => {
   }
 
   const onSubmit = async (values: LicenseSchema) => {
+    toast("processing the license");
     try {
       const result = licenseSchema.safeParse(values);
       if (result.error) {
@@ -390,7 +395,6 @@ const AddLicenseForm = () => {
                                 onSelect={(date) =>
                                   field.onChange(date ?? undefined)
                                 }
-                                initialFocus
                               />
                             </PopoverContent>
                           </Popover>

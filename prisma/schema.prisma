@@ -31,11 +31,12 @@ model Medical {
   id                   String     @id @default(cuid())
   medical_report_photo String     @map("photo")
   blood_group          BloodGroup @map("blood_group")
-  blood_pressure       String?     @map("blood_pressure")
+  blood_pressure       String?    @map("blood_pressure")
   height               String?
   weight               String?
   dateOfBirth          DateTime   @map("date_of_birth")
   gender               Gender
+  restrictions         String[]
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
@@ -106,14 +107,13 @@ model User {
   phone     String @map("phone_number")
   email     String @unique
 
-  address       Address     @relation(fields: [addressId], references: [id])
-  addressId     String      @unique @map("address_id")
-  staff         Staff?
-  license       License     @relation(fields: [licenseId], references: [id])
-  licenseId     String      @unique @map("license_id")
-  appointment   Appointment @relation(fields: [appointmentId], references: [id])
-  appointmentId String
-  logs          Log[]
+  address      Address       @relation(fields: [addressId], references: [id])
+  addressId    String        @unique @map("address_id")
+  staff        Staff?
+  license      License       @relation(fields: [licenseId], references: [id])
+  licenseId    String        @unique @map("license_id")
+  appointments Appointment[]
+  logs         Log[]
 
   @@map("users")
 }
@@ -141,7 +141,7 @@ model LicenseVehicleCategory {
   id             String         @id @default(cuid())
   dateOfIssue    DateTime       @map("date_of_issue")
   dateOfExpiry   DateTime       @map("date_of_expiry")
-  categoryStatus CategoryStatus @map("category_status") @default(ACTIVE)
+  categoryStatus CategoryStatus @default(ACTIVE) @map("category_status")
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
@@ -223,7 +223,6 @@ model Issue {
 
 model Appointment {
   id          String            @id @default(cuid())
-  userId      String            @map("user_id")
   type        AppointmentType
   scheduledAt DateTime          @map("scheduled_at")
   status      AppointmentStatus
@@ -233,7 +232,8 @@ model Appointment {
   deletedAt DateTime? @map("deleted_at")
   deleted   Boolean   @default(false)
 
-  users User[]
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
 
   @@map("appointments")
 }
