@@ -1,0 +1,37 @@
+{
+  "nic": "200232323232",
+  "phoneNumber": "+94764468108",
+  "firstName": "1212",
+  "lastName": "121",
+  "dateOfBirth": "2025-04-15T18:30:00.000Z",
+  "gender": "MALE",
+  "bloodGroup": "A_NEG",
+  "email": "1212@gmail.com",
+  "province": "EASTERN",
+  "district": "KURUNEGALA",
+  "city": "dfdf",
+  "address": "121212",
+  "licenseType": "LEARNER",
+  "autoOnly": true,
+  "licenseClasses": [
+    {
+      "id": "096d111a-7e0c-4757-bcd4-14fb456eeeaa",
+      "vehicleClass": "DE",
+      "vehicleCategory": "DE",
+      "issueDate": "2025-04-23T05:41:26.545Z",
+      "expiryDate": "2025-10-22T05:41:26.545Z"
+    },
+    {
+      "id": "60cb2021-9377-447a-9c9f-699e037f9cf4",
+      "vehicleClass": "C",
+      "vehicleCategory": "C",
+      "issueDate": "2025-04-23T05:41:28.219Z",
+      "expiryDate": "2025-10-22T05:41:28.219Z"
+    }
+  ],
+  "nicFrontUrl": "https://hfs4q2pwcf.ufs.sh/f/uEo9AmFegi6anrn1iEtyGMvB40mZPqUNzluDp6cfFRtTEQji",
+  "nicBackUrl": "https://hfs4q2pwcf.ufs.sh/f/uEo9AmFegi6a5qYnI6baEHpkZjiBQ8dbwsAFKz39UODJo1Yt",
+  "medicalUrl": "https://hfs4q2pwcf.ufs.sh/f/uEo9AmFegi6aZzoBrKdhOzldrba42N3AgLV87WtCGm5skieX",
+  "previousLicenseUrl": "",
+  "photoUrl": "https://hfs4q2pwcf.ufs.sh/f/uEo9AmFegi6aHhjRR2TgXyP3KwQaZ9LE1feW7VvBHAOCojSY"
+}

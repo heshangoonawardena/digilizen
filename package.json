@@ -6,7 +6,7 @@
   "scripts": {
     "build": "next build",
     "check": "next lint && tsc --noEmit",
-    "db:generate": "prisma migrate dev",
+    "db:generate": "prisma generate",
     "db:seed": "prisma db seed",
     "db:reset": "prisma migrate reset",
     "db:migratsxte": "prisma migrate deploy",

@@ -1,5 +1,6 @@
 "use client";
 
+import { type Roles } from "@/types/globals";
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +13,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { useUser } from "@clerk/nextjs";
 import {
   Banknote,
   BriefcaseMedical,
@@ -28,16 +30,11 @@ import { usePathname } from "next/navigation";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
-  const role = "admin";
+  const { user } = useUser();
+
+  const role: Roles = user?.publicMetadata.role as Roles;
 
   const routes = [
-    {
-      label: "Dashboard",
-      icon: LayoutDashboard,
-      href: "/user",
-      active: pathname === "/user",
-      visible: ["user"],
-    },
     {
       label: "Dashboard",
       icon: LayoutDashboard,
@@ -48,22 +45,22 @@ export default function DashboardSidebar() {
     {
       label: "Dashboard",
       icon: LayoutDashboard,
-      href: "/admin",
-      active: pathname === "/admin",
+      href: "/admin/dashboard",
+      active: pathname === "/admin/dashboard",
       visible: ["admin"],
     },
     {
       label: "Add License",
       icon: HardDriveUpload,
-      href: "/tab/addLicense",
-      active: pathname === "/admin",
+      href: "/admin/addLicense",
+      active: pathname === "/admin/addLicense",
       visible: ["admin"],
     },
     {
-      label: "My Licenses",
+      label: "License",
       icon: CreditCard,
-      href: "/dashboard/licenses",
-      active: pathname === "/dashboard/licenses",
+      href: "/user/license",
+      active: pathname === "/user/license",
       visible: ["user"],
     },
     {

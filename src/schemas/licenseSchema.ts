@@ -9,7 +9,7 @@ export const licenseSchema = z.object({
   firstName: z.string().min(1, { message: "First  name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
   dateOfBirth: z.coerce.date(),
-  gender: z.enum(["male", "female"], { message: "Gender is required" }),
+  gender: z.enum(["MALE", "FEMALE"], { message: "Gender is required" }),
   bloodGroup: z.enum(
     ["A_POS", "A_NEG", "B_POS", "B_NEG", "AB_POS", "AB_NEG", "O_POS", "O_NEG"],
     {
@@ -33,10 +33,39 @@ export const licenseSchema = z.object({
     ],
     { message: "Province is required" },
   ),
-  district: z.enum(["male", "female"], { message: "District is required" }),
+  district: z.enum(
+    [
+      "AMPARA",
+      "ANURADHAPURA",
+      "BADULLA",
+      "BATTICALOA",
+      "COLOMBO",
+      "GALLE",
+      "GAMPAHA",
+      "HAMBANTOTA",
+      "JAFFNA",
+      "KALUTARA",
+      "KANDY",
+      "KEGALLE",
+      "KILINOCHCHI",
+      "KURUNEGALA",
+      "MANNAR",
+      "MATALE",
+      "MATARA",
+      "MONARAGALA",
+      "MULLAITIVU",
+      "NUWARA_ELIYA",
+      "POLONNARUWA",
+      "PUTTALAM",
+      "RATNAPURA",
+      "TRINCOMALEE",
+      "VAVUNIYA",
+    ],
+    { message: "District is required" },
+  ),
   city: z.string({ message: "City is required" }).min(1),
   address: z.string({ message: "Address is required" }).min(1),
-  licenseType: z.enum(["LEARNERSPERMIT", "PERMANENT"], {
+  licenseType: z.enum(["LEARNER", "PERMANENT"], {
     message: "License type is required",
   }),
   correctiveLens: z.boolean().optional(),
@@ -44,11 +73,8 @@ export const licenseSchema = z.object({
   licenseClasses: z
     .array(
       z.object({
-        id: z.string().uuid(),
+        id: z.string(),
         vehicleClass: z.string().min(1),
-        vehicleCategory: z
-          .string()
-          .min(1, { message: "Vehicle category is required" }),
         issueDate: z.coerce.date(),
         expiryDate: z.coerce.date(),
       }),
@@ -64,3 +90,5 @@ export const licenseSchema = z.object({
   previousLicenseUrl: z.union([z.string().url().nullish(), z.literal("")]),
   photoUrl: z.string({ message: "Photo is requried" }).url(),
 });
+
+export type LicenseSchema = z.infer<typeof licenseSchema>;
